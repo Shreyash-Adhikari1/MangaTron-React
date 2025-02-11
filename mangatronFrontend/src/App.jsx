@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 const Login = lazy(() => import("./components/public/Login.jsx"));
 const Registration = lazy(() => import("./components/public/Registration.jsx"));
+const Home = lazy(()=> import('./components/public/Home.jsx'))
 
 function App() {
   return (
@@ -11,6 +12,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
           <Route path="/register" element={<Registration />} />
+          <Route path="/home" element={<Home/>} />
+          
         </Routes>
       </Suspense>
     </Router>
