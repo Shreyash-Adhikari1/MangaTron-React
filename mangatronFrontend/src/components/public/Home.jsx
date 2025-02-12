@@ -75,27 +75,34 @@ export default function Home() {
       <ContentFrame>
         {/* If an item is selected, show the WebView (iframe) */}
         {selectedUrl ? (
-          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <div>
             <button 
               onClick={() => setSelectedUrl(null)}
               style={{
-                padding: "10px 20px",
-                fontSize: "16px",
-                cursor: "pointer",
-                backgroundColor: "#ff4757",
-                color: "white",
+                marginBottom: "10px",
+                padding: "8px 16px",
+                borderRadius: "8px",
                 border: "none",
-                borderRadius: "5px",
-                marginBottom: "10px"
+                backgroundColor: "#ff4d4d",
+                color: "white",
+                cursor: "pointer"
               }}
             >
               Go Back
             </button>
-            <div style={{ width: "100%", height: "600px" }}>
+            
+            <div style={{ width: "100%", height: "600px", overflow: "hidden", position: "relative" }}>
               <iframe 
                 src={selectedUrl} 
-                style={{ width: "100%", height: "100%", border: "none" }} 
+                style={{
+                  width: "100%",   // Adjust width to crop content
+                  height: "800px", // Increase height for better view
+                  border: "none",
+                  position: "relative",
+                  top: "-180px"   // Move content upwards to hide unwanted parts
+                }} 
                 title="Manga Viewer"
+                sandbox="allow-scripts allow-same-origin"
               />
             </div>
           </div>
@@ -106,11 +113,7 @@ export default function Home() {
               <TrendingIndicate>Trending</TrendingIndicate>
               <TrendingContent>
                 {trendingItems.map((item, index) => (
-                  <TrendingItem 
-                    key={index} 
-                    onClick={() => setSelectedUrl(item.url)}
-                    style={{ cursor: "pointer" }} // Ensure it's clickable
-                  >
+                  <TrendingItem key={index} onClick={() => setSelectedUrl(item.url)}>
                     <TrendingImage src={item.img} alt={item.name} />
                     <TrendingName>{item.name}</TrendingName>
                   </TrendingItem>
@@ -123,11 +126,7 @@ export default function Home() {
               <RecommendIndicate>Recommended</RecommendIndicate>
               <RecommendContent>
                 {recommendedItems.map((item, index) => (
-                  <RecommendItem 
-                    key={index} 
-                    onClick={() => setSelectedUrl(item.url)}
-                    style={{ cursor: "pointer" }} // Ensure it's clickable
-                  >
+                  <RecommendItem key={index} onClick={() => setSelectedUrl(item.url)}>
                     <RecommendImage src={item.img} alt={item.name} />
                     <RecommendName>{item.name}</RecommendName>
                   </RecommendItem>
