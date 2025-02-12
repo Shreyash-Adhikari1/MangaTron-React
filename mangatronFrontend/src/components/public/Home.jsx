@@ -3,13 +3,21 @@ import {
   MainContainer,
   NavFrame,
   NavItemsFrame,
+  NavFrameRight,
   NavItems,
+  ContentFrame,
   TrendingFrame,
   TrendingIndicate,
   TrendingContent,
   TrendingItem,
   TrendingImage,
-  TrendingName
+  TrendingName,
+  RecommendedFrame,
+  RecommendContent,
+  RecommendIndicate,
+  RecommendItem,
+  RecommendName,
+  RecommendImage
  } from '../../styles/HomeStyle'
  
  import baskerville from "../../../public/assets/mangaImages/baskerville.jpg"
@@ -31,6 +39,16 @@ export default function Home() {
     { name: "Magic Emperor", img: magicEmperor },
     { name: "Kagurabachi", img: kagurabachi }
   ];
+
+  const recommendedItems=[
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+    {name: "Bleach",img:''},
+  ];
   return (
     <MainContainer>
       {/* Navigation Pane */}
@@ -42,10 +60,17 @@ export default function Home() {
         <NavItems>Genres</NavItems>
       
         </NavItemsFrame>
+  
+        <NavFrameRight>
+            <NavItems>Store</NavItems>
+            <NavItems>About</NavItems>
+            <NavItems>User</NavItems>
+        </NavFrameRight>
        </NavFrame>
 
-       {/* Trending Pane */}
-      <TrendingFrame>
+       <ContentFrame>
+        {/* Trending Pane */}
+       <TrendingFrame>
         <TrendingIndicate>Trending</TrendingIndicate>
 
         <TrendingContent>
@@ -59,6 +84,24 @@ export default function Home() {
         </TrendingContent>
 
       </TrendingFrame>
+      <RecommendedFrame>
+            <RecommendIndicate>Recommended</RecommendIndicate>
+            <RecommendContent>
+              {recommendedItems.map((item,index)=>(
+                <RecommendItem key={index}>
+                  <RecommendImage src={item.img} alt={item.name}></RecommendImage>
+                  <RecommendName>{item.name}</RecommendName>
+                </RecommendItem>
+              ))}
+            </RecommendContent>
+
+      </RecommendedFrame>
+
+
+       </ContentFrame>
+
+       
+      
 
     </MainContainer>
   )
