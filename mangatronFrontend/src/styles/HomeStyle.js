@@ -45,7 +45,7 @@ export const ContentFrame=styled.div`
    flex-direction:column;
    height:800px;
    width:203vh;
-   background-color:#a3a3a3
+   background-color:#ffffff
   //overflow-y: auto;
 `;
 
@@ -104,7 +104,7 @@ export const RecommendedFrame=styled.div`
    flex-direction: column;
    height:340px;
    width:203 vh;
-   background-color:red
+   background-color:white
 `;
 
 export const RecommendIndicate=styled.p`
@@ -120,7 +120,6 @@ export const RecommendContent=styled.div`
    display:flex;
    height: 300px;
    width: 200vh;
-   background-color: white;
    margin-left:10px
 `;
 export const RecommendItem = styled.div`
