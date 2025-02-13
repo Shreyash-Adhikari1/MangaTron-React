@@ -17,8 +17,12 @@ import {
   RecommendIndicate,
   RecommendItem,
   RecommendName,
-  RecommendImage
+  RecommendImage,
+  WebViewContainer,
+  WebViewIframe,
+  BackButton
 } from '../../styles/HomeStyle';
+
 
 import baskerville from "../../../public/assets/mangaImages/baskerville.jpg";
 import dandadan from '../../../public/assets/mangaImages/dandadan.jpg';
@@ -76,35 +80,17 @@ export default function Home() {
         {/* If an item is selected, show the WebView (iframe) */}
         {selectedUrl ? (
           <div>
-            <button 
-              onClick={() => setSelectedUrl(null)}
-              style={{
-                marginBottom: "10px",
-                padding: "8px 16px",
-                borderRadius: "8px",
-                border: "none",
-                backgroundColor: "#ff4d4d",
-                color: "white",
-                cursor: "pointer"
-              }}
-            >
+            <BackButton onClick={() => setSelectedUrl(null)}>
               Go Back
-            </button>
+            </BackButton>
             
-            <div style={{ width: "100%", height: "600px", overflow: "hidden", position: "relative" }}>
-              <iframe 
+            <WebViewContainer>
+              <WebViewIframe 
                 src={selectedUrl} 
-                style={{
-                  width: "100%",   // Adjust width to crop content
-                  height: "800px", // Increase height for better view
-                  border: "none",
-                  position: "relative",
-                  top: "-180px"   // Move content upwards to hide unwanted parts
-                }} 
                 title="Manga Viewer"
                 sandbox="allow-scripts allow-same-origin"
               />
-            </div>
+            </WebViewContainer>
           </div>
         ) : (
           <>

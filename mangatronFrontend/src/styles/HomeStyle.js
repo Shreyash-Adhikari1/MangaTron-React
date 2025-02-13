@@ -144,3 +144,30 @@ export const RecommendName = styled.p`
    margin-top: 5px;
    text-align: center;
 `;
+
+
+export const WebViewContainer = styled.div`
+  width: 100%;
+  height: 600px;
+  overflow: hidden;
+  position: relative;
+`;
+
+export const WebViewIframe = styled.iframe`
+  width: 100%;
+  height: 1530px; /* Increase height to make sure we have extra space */
+  border: none;
+  position: relative;
+  top: -200px; /* Move content upwards */
+  margin-bottom: -800px; /* Crop bottom 200px */
+`;
+
+export const BackButton = styled.button`
+  margin-bottom: 10px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #ff4d4d;
+  color: white;
+  cursor: pointer;
+`;
