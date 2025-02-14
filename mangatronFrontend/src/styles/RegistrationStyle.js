@@ -83,3 +83,9 @@ export const Button = styled.button`
     background-color: #222;
   }
 `;
+export const LoginRed= styled.p`
+  margin-top: 15px;
+  font-size: 14px;
+  font-weight: bold;
+  margin-left: 250px
+`;

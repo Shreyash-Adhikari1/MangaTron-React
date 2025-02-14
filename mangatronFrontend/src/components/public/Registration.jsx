@@ -8,8 +8,10 @@ import {
   Label,
   Input,
   Button,
+  LoginRed
 } from "../../styles/RegistrationStyle.js";
 import logo from '../../../public/assets/images/logoMangatron.png'
+import { Link } from "react-router-dom";
 
 
 const RegisterPage = () => {
@@ -30,6 +32,10 @@ const RegisterPage = () => {
           <Input type="password" />
 
           <Button>Sign up</Button>
+          <Link to="/">
+            <LoginRed>Back To Login</LoginRed>
+          </Link>
+          
         </Form>
       </RegisterBox>
     </Container>

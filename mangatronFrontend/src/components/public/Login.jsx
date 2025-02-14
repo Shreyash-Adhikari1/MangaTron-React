@@ -13,6 +13,8 @@ import {
   ImageContainer,
 } from '../../styles/LoginStyles.js'; // The css//styles imported from style components file
 import loginImage from '../../../public/assets/images/satoru.png'
+import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 
 
@@ -35,9 +37,13 @@ const LoginPage = () => {
           <Button>Start Reading</Button>
         </Form>
 
+        <Link to="/register">
         <RegisterText>
+          
           Don’t Have An Account? <RegisterLink href="">Register Here</RegisterLink>
         </RegisterText>
+        </Link>
+
       </LoginBox>
 
       <ImageContainer>
