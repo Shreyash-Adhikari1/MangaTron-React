@@ -12,6 +12,7 @@ export const NavFrame = styled.div`
    display: flex;
    height: 100px;
    width: 203vh;
+   background-color:#393a3f;
 `;
 
 export const NavItemsFrame= styled.div`
@@ -45,7 +46,7 @@ export const ContentFrame=styled.div`
    flex-direction:column;
    height:800px;
    width:203vh;
-   background-color:#ffffff
+   background-color:#393a3f
   //overflow-y: auto;
 `;
 
@@ -155,11 +156,11 @@ export const WebViewContainer = styled.div`
 
 export const WebViewIframe = styled.iframe`
   width: 100%;
-  height: 1530px; /* Increase height to make sure we have extra space */
+  height: 1530px; /* Increasing height to have extra space*/
   border: none;
   position: relative;
-  top: -200px; /* Move content upwards */
-  margin-bottom: -800px; /* Crop bottom 200px */
+  top: -200px; /* This is to move the webview content upwards */
+  margin-bottom: -800px; /* This is to crop from the bottom */
 `;
 
 export const BackButton = styled.button`
