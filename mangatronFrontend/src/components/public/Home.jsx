@@ -42,6 +42,7 @@ import opm from '../../../public/assets/mangaImages/opm.jpeg'
 import dad from '../../../public/assets/mangaImages/dad.jpg'
 import out from '../../../public/assets/mangaImages/out.jpg'
 import homunculus from '../../../public/assets/mangaImages/homunculus.jpeg'
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [selectedUrl, setSelectedUrl] = useState(null);
@@ -77,12 +78,15 @@ export default function Home() {
       {/* Navigation Pane */}
       <NavFrame>
         <NavItemsFrame>
-          <NavItems>Home</NavItems>
-          <NavItems>Latest Releases</NavItems>
-          <NavItems>Genres</NavItems>
+          <Link to='/home'> <NavItems>Home</NavItems>  </Link>
+          
+          <Link to='/latest'> <NavItems>Latest Releases</NavItems> </Link>
+
+          <Link to='/genre'> <NavItems>Genres</NavItems> </Link>
         </NavItemsFrame>
         <NavFrameRight>
-          <NavItems>Store</NavItems>
+          <Link to='/store'> <NavItems>Store</NavItems> </Link>
+          
           <NavItems>About</NavItems>
           <NavItems>User</NavItems>
         </NavFrameRight>
