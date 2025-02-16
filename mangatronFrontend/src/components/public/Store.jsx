@@ -4,7 +4,8 @@ import {
     NavFrame,
     NavItemsFrame,
     NavFrameRight,
-    NavItems
+    NavItems,
+    StoreContent
 }from '../../styles/StoreStyle.js'
 import { Link } from 'react-router-dom'
 export default function Store() {
@@ -24,8 +25,8 @@ export default function Store() {
                   <NavItems>About</NavItems>
                   <NavItems>User</NavItems>
                 </NavFrameRight>
-
               </NavFrame>
+              <StoreContent></StoreContent>
     </StoreContainer>
   )
 }

@@ -1,17 +1,10 @@
-import { Router } from "express";
-import { register, loginUser, getAllUsers } from "../controller/userController.js";
-import { authGuard, authGuardAdmin } from "../middleware/authGuard.js";
+import express from "express";
+import { userController } from "../../controller/index.js";
+const router = express.Router();
+router.get("/", userController.getAll);
+router.post("/", userController.create);
+router.put("/:id", userController.update);
+router.get("/:id", userController.getById);
+router.delete("/:id", userController.delelteById);
 
-const router = Router();
-
-// Create user API
-router.post("/register", register);
-
-// Task 1: Create login API
-router.post("/login", loginUser);
-
-// Get all users (requires authGuard and authGuardAdmin middleware)
-router.get("/getAll", authGuard, authGuardAdmin, getAllUsers);
-
-// Exporting
-export default router;
+export { router as userRouter };

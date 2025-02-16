@@ -51,3 +51,10 @@ export const NavItems = styled.p`
       color: #ffcc00;
    }
 `;
+
+export const StoreContent= styled.div`
+   display: flex;
+   height: 80vh;
+   width: auto;
+   background-color: #393a3f
+`;
