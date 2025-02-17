@@ -1,4 +1,4 @@
-import { User } from "../../models/index.js";
+import { User } from "../../model/index.js";
 import { generateToken } from "../../security/jwt-util.js";
 
 const login = async (req, res) => {
