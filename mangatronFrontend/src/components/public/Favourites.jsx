@@ -1,17 +1,18 @@
 import React from 'react'
 import { 
-    GenreContainer,
+    FavouriteContainer,
     NavFrame,
     NavItemsFrame,
     NavFrameRight,
-    NavItems
- } from '../../styles/GenreStyles'
- import { Link } from 'react-router-dom'
-export default function Genres() {
+    NavItems 
+    } from '../../styles/FavouriteStyles'
+
+import { Link } from 'react-router-dom'
+
+export default function Favourites() {
   return (
-    <GenreContainer>
-        {/* Navigation Pane */}
-      <NavFrame>
+    <FavouriteContainer>
+         <NavFrame>
         <NavItemsFrame>
           <Link to='/home'> <NavItems>Home</NavItems>  </Link>
           
@@ -23,11 +24,12 @@ export default function Genres() {
 
         <NavFrameRight>
           <Link to='/store'> <NavItems>Store</NavItems> </Link>
-          <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
           
+          <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
           <NavItems>User</NavItems>
         </NavFrameRight>
       </NavFrame>
-    </GenreContainer>
+        
+    </FavouriteContainer>
   )
 }

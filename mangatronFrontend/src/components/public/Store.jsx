@@ -22,7 +22,7 @@ export default function Store() {
 
                 <NavFrameRight>
                   <Link to='/store'> <NavItems>Store</NavItems> </Link>
-                  <NavItems>About</NavItems>
+                  <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
                   <NavItems>User</NavItems>
                 </NavFrameRight>
               </NavFrame>

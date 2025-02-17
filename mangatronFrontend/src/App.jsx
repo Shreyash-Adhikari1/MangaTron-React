@@ -6,7 +6,8 @@ const Registration = lazy(() => import("./components/public/Registration.jsx"));
 const Home = lazy(()=> import('./components/public/Home.jsx'));
 const Store = lazy(()=> import('./components/public/Store.jsx'));
 const LatestReleases = lazy(()=> import('./components/public/LatestReleases.jsx'));
-const Genres = lazy(()=> import('./components/public/Genres.jsx'))
+const Genres = lazy(()=> import('./components/public/Genres.jsx'));
+const Favourites = lazy(()=>import('./components/public/Favourites.jsx'))
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/store" element={<Store/>}/>
           <Route path="/latest" element={<LatestReleases/>}/>
           <Route path="/genre" element={<Genres/>}/>
+          <Route path="/favourites" element={<Favourites/>}/>
         </Routes>
       </Suspense>
     </Router>
