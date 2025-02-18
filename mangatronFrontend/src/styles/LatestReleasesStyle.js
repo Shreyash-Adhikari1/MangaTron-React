@@ -1,9 +1,11 @@
-import styled from "styled-components";
-export const LatestContainer=styled.div`
-    display: flex;
-    height: 100vh;
-    width: 203vh;
-    flex-direction: column;
+import styled from 'styled-components';
+
+export const MainContainer = styled.div`
+   display: flex;
+   height: 100vh;
+   width: 203vh;
+   flex-direction: column;
+   overflow:hidden
 `;
 
 // Navigation Bar
@@ -49,8 +51,98 @@ export const NavItems = styled.p`
    &:active {
       color: #ffcc00;
    }
-      
+   
   &:hover {
     transform: scale(1.09);
   }
+`;
+
+// Content Section
+export const ContentFrame = styled.div`
+   display: flex;
+   flex-direction: column;
+   width: 100%;
+   background-color: #393a3f;
+`;
+
+export const LatestFrame = styled.div`
+   display: flex;
+   flex-direction: column;
+   background-color: #393a3f;
+   margin-top: 10px;
+   height: 300px;
+   width: 203vh;
+`;
+
+export const LatestIndicate = styled.p`
+   font-size: 24px;
+   font-family: 'Inconsolata', monospace;
+   font-weight: 600;
+   color: #f5f5f5; /* Light gray */
+   margin-top: 10px;
+   margin-left: 20px;
+`;
+
+export const LatestContent = styled.div`
+   display: flex;
+   height: 300px;
+   width: 200vh;
+   background-color: #393a3f;
+   margin-top: 0px;
+   margin-left: 10px;
+`;
+
+export const LatestItem = styled.div`
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   width: 150px;
+
+   
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+export const LatestImage = styled.img`
+   width: 120px;
+   height: 180px;
+   border-radius: 5px;
+   object-fit: cover;
+`;
+
+export const LatestName = styled.p`
+   font-size: 18px;
+   font-family: 'Inconsolata', monospace;
+   font-weight: 600;
+   color: #d1d1d1; /* Soft gray for a balanced look */
+   margin-top: 5px;
+   text-align: center;
+`;
+
+
+export const LatestWebViewContainer = styled.div`
+   width: 100%;
+   height: 600px;
+   overflow: hidden;
+   position: relative;
+`;
+
+export const LatestWebViewIframe = styled.iframe`
+   width: 100%;
+   height: 1530px;
+   border: none;
+   position: relative;
+   top: -200px;
+   margin-bottom: -800px;
+`;
+
+export const LatestBackButton = styled.button`
+   margin-bottom: 10px;
+   padding: 8px 16px;
+   border-radius: 8px;
+   border: none;
+   background-color: #ff4d4d;
+   color: white;
+   cursor: pointer;
 `;
