@@ -52,6 +52,13 @@ export default function Home() {
     { name: "Lookism", img:lookism, url: "https://weebcentral.com/series/01J76XYBD282Y3XKX0KRGD64Q5/Lookism" },
     { name: "Gokurakugai", img: gokurakugai, url: "https://weebcentral.com/series/01J76XYFNQGKHPRGEJYNZF3A6E/Gokurakugai" },
     { name: "One-Punch Man", img: opm, url: "https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man" },
+    { name: "Magic Emperor", img: magicEmperor, url: "https://weebcentral.com/series/01J76XYDT3Z0ZJ7NNG4Q74QFFG/Magic-Emperor" },
+    { name: "Kagurabachi", img: kagurabachi, url: "https://weebcentral.com/series/01J76XYGGM22WZP7T4TKA4ZFAF/Kagurabachi" },
+    { name: "Omniscient Reader", img: readerVp, url: "https://weebcentral.com/series/01J76XYDMWWJX3T4BFWR84FQQK/Omniscient-Readers-Viewpoint" },
+    { name: "Lookism", img:lookism, url: "https://weebcentral.com/series/01J76XYBD282Y3XKX0KRGD64Q5/Lookism" },
+    { name: "Gokurakugai", img: gokurakugai, url: "https://weebcentral.com/series/01J76XYFNQGKHPRGEJYNZF3A6E/Gokurakugai" },
+    { name: "One-Punch Man", img: opm, url: "https://weebcentral.com/series/01J76XY7KT7J224EBK6J816Y1Q/Onepunch-Man" },
+    
   ];
 
   return (

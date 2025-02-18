@@ -7,6 +7,7 @@ import {
   NavItems,
   StoreContent,
   ProductGrid,
+  AllProductGrid,
   MangaGrid,
   MerchandiseGrid,
   PostersGrid,
@@ -63,7 +64,20 @@ export default function Store() {
 
   // Function to return the correct product grid
   const renderProducts = () => {
+    
     switch (selectedCategory) {
+      case "all":
+        return (
+          <AllProductGrid>
+            {allProducts.map((product, index) => (
+              <ProductCard key={index}>
+                <ProductImage src={product.img} alt={product.name} />
+                <ProductName>{product.name}</ProductName>
+                <ProductPrice>{product.price}</ProductPrice>
+              </ProductCard>
+            ))}
+          </AllProductGrid>
+        );
       case "manga":
         return (
           <MangaGrid>

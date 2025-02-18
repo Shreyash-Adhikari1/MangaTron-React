@@ -13,13 +13,13 @@ export const NavFrame = styled.div`
    display: flex;
    justify-content: space-between;
    align-items: center;
-   height: 100px;
+   height: 100px; /* Ensure height remains the same */
+   min-height: 100px; /* Prevent shrinking */
    width: 100vw;
    background-color: #222327;
    padding: 0 20px;
    box-sizing: border-box;
 `;
-
 export const NavItemsFrame = styled.div`
    display: flex;
    gap: 50px;
@@ -120,6 +120,10 @@ export const ProductGrid = styled.div`
 
   /* Hide scrollbar for IE/Edge */
   -ms-overflow-style: none;
+`;
+export const AllProductGrid= styled(ProductGrid)`
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
 `;
 
 // Manga Grid

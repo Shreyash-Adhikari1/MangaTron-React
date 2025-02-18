@@ -13,48 +13,42 @@ export const NavFrame = styled.div`
    display: flex;
    justify-content: space-between;
    align-items: center;
-   height: 100px;
-   width: 203vh;
-   background-color: #222327; /* Darker shade for contrast */
+   height: 100px; /* Ensure height remains the same */
+   min-height: 100px; /* Prevent shrinking */
+   width: 100vw;
+   background-color: #222327;
+   padding: 0 20px;
+   box-sizing: border-box;
 `;
-
 export const NavItemsFrame = styled.div`
-   display: grid;
-   grid-template-columns: repeat(3, auto);
+   display: flex;
    gap: 50px;
    align-items: center;
-   margin-left: 20px;
 `;
 
 export const NavFrameRight = styled.div`
-   display: grid;
-   grid-template-columns: repeat(3, auto);
+   display: flex;
    gap: 50px;
    align-items: center;
-   margin-right: 10px;
 `;
 
-// Navigation Items with Hover & Click Effects
 export const NavItems = styled.p`
    font-size: 24px;
    font-family: 'Inconsolata', monospace;
    font-weight: 600;
-   color: #f5f5f5; /* Light gray for better readability */
+   color: #f5f5f5;
    text-align: center;
    cursor: pointer;
-   transition: color 0.3s ease-in-out;
+   transition: all 0.3s ease-in-out;
 
    &:hover {
-      color: #ffcc00; /* Gold color on hover */
+      color: #ffcc00;
+      transform: scale(1.09);
    }
 
    &:active {
       color: #ffcc00;
    }
-   
-  &:hover {
-    transform: scale(1.09);
-  }
 `;
 
 // Content Section
@@ -63,6 +57,7 @@ export const ContentFrame = styled.div`
    flex-direction: column;
    width: 100%;
    background-color: #393a3f;
+   height:100%
 `;
 
 export const LatestFrame = styled.div`
@@ -70,8 +65,8 @@ export const LatestFrame = styled.div`
    flex-direction: column;
    background-color: #393a3f;
    margin-top: 10px;
-   height: 300px;
-   width: 203vh;
+   height:100%;
+   width:100%
 `;
 
 export const LatestIndicate = styled.p`
@@ -84,25 +79,30 @@ export const LatestIndicate = styled.p`
 `;
 
 export const LatestContent = styled.div`
-   display: flex;
-   height: 300px;
-   width: 200vh;
+   display: grid;
+   grid-template-columns: repeat(10, 1fr); 
+   gap: 10px; 
+   width: 100%;
    background-color: #393a3f;
-   margin-top: 0px;
-   margin-left: 10px;
+   margin-top: 10px;
+   padding: 10px;
+   justify-content: center;
 `;
+
 
 export const LatestItem = styled.div`
    display: flex;
    flex-direction: column;
    align-items: center;
-   width: 150px;
+   width: 100%;
+   max-width: 150px; /* Prevents items from stretching */
+   margin: 0 auto;
 
-   
-  &:hover {
-    transform: scale(1.05);
-  }
+   &:hover {
+      transform: scale(1.05);
+   }
 `;
+
 
 export const LatestImage = styled.img`
    width: 120px;
