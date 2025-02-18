@@ -50,4 +50,8 @@ export const NavItems = styled.p`
    &:active {
       color: #ffcc00;
    }
+      
+  &:hover {
+    transform: scale(1.09);
+  }
 `;

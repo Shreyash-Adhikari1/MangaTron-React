@@ -37,7 +37,7 @@ export const NavItems = styled.p`
    font-size: 24px;
    font-family: 'Inconsolata', monospace;
    font-weight: 600;
-   color: ${(props) => (props.active ? "#ffcc00" : "#f5f5f5")}; /* Yellow if active */
+   color: #f5f5f5; /* Light gray for better readability */
    text-align: center;
    cursor: pointer;
    transition: color 0.3s ease-in-out;
@@ -45,4 +45,12 @@ export const NavItems = styled.p`
    &:hover {
       color: #ffcc00; /* Gold color on hover */
    }
+
+   &:active {
+      color: #ffcc00;
+   }
+      
+  &:hover {
+    transform: scale(1.09);
+  }
 `;

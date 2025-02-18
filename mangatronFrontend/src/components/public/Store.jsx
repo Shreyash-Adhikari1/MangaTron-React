@@ -1,42 +1,70 @@
-import React, {useState} from 'react'
+import React from "react";
 import {
-    StoreContainer,
-    NavFrame,
-    NavItemsFrame,
-    NavFrameRight,
-    NavItems,
-    StoreContent
-}from '../../styles/StoreStyle.js'
-import { Link } from 'react-router-dom'
+  StoreContainer,
+  NavFrame,
+  NavItemsFrame,
+  NavFrameRight,
+  NavItems,
+  StoreContent,
+  ProductGrid,
+  ProductCard,
+  ProductImage,
+  ProductName,
+  ProductPrice,
+  Sidebar,
+  SidebarTitle,
+  SidebarItem,
+} from "../../styles/StoreStyle.js";
+import { NavLink } from "react-router-dom";
+import onepiece from '../../../public/assets/mangaImages/onePiece.png'
 
 export default function Store() {
-
-   const [activeIndex, setActiveIndex] = useState(null);
-  
-    const handleClick = (index) => {
-      setActiveIndex(index);
-    };
+  const products = [
+    { name: "One Piece Manga Vol.1", img: onepiece, price: "$10" },
+    { name: "Naruto Hoodie", img:  onepiece, price: "$30" },
+    { name: "Attack on Titan Keychain", img:  onepiece, price: "$5" },
+    { name: "Jujutsu Kaisen Poster", img:  onepiece, price: "$12" },
+    { name: "Demon Slayer Sword", img:  onepiece, price: "$50" },
+  ];
 
   return (
     <StoreContainer>
-        <NavFrame>
-                <NavItemsFrame>
-                    <Link to='/home' onClick={() => handleClick(0)}> <NavItems active={activeIndex === 0}>Home</NavItems>  </Link>
+      {/* Navigation Pane */}
+      <NavFrame>
+        <NavItemsFrame>
+          <NavLink to="/home"> <NavItems>Home</NavItems> </NavLink>
+          <NavLink to="/latest"> <NavItems>Latest Releases</NavItems> </NavLink>
+          <NavLink to="/genre"> <NavItems>Genres</NavItems> </NavLink>
+        </NavItemsFrame>
+        <NavFrameRight>
+          <NavLink to="/store"> <NavItems>Store</NavItems> </NavLink>
+          <NavLink to="/favourites"> <NavItems>Favourites</NavItems> </NavLink>
+          <NavItems>User</NavItems>
+        </NavFrameRight>
+      </NavFrame>
 
-                    <Link to='/latest' onClick={() => handleClick(1)}> <NavItems active={activeIndex === 1}>Latest Releases</NavItems> </Link>
+      {/* Store Content */}
+      <StoreContent>
+        {/* Sidebar */}
+        <Sidebar>
+          <SidebarTitle>Categories</SidebarTitle>
+          <SidebarItem>Manga</SidebarItem>
+          <SidebarItem>Merchandise</SidebarItem>
+          <SidebarItem>Figures</SidebarItem>
+          <SidebarItem>Posters</SidebarItem>
+        </Sidebar>
 
-                    <Link to='/genre' onClick={() => handleClick(2)}> <NavItems active={activeIndex === 2}>Genres</NavItems> </Link>
-                </NavItemsFrame>
-
-                <NavFrameRight>
-                  <Link to='/store' onClick={() => handleClick(3)}> <NavItems active={activeIndex === 3}>Store</NavItems> </Link>
-
-                  <Link to='/favourites' onClick={() => handleClick(4)}> <NavItems active={activeIndex === 4}>Favourites</NavItems> </Link>
-                  
-                  <NavItems>User</NavItems>
-                </NavFrameRight>
-              </NavFrame>
-              <StoreContent></StoreContent>
+        {/* Product Grid */}
+        <ProductGrid>
+          {products.map((product, index) => (
+            <ProductCard key={index}>
+              <ProductImage src={product.img} alt={product.name} />
+              <ProductName>{product.name}</ProductName>
+              <ProductPrice>{product.price}</ProductPrice>
+            </ProductCard>
+          ))}
+        </ProductGrid>
+      </StoreContent>
     </StoreContainer>
-  )
+  );
 }
