@@ -23,6 +23,7 @@ import {
   BackButton
 } from '../../styles/HomeStyle';
 
+import { NavLink } from 'react-router-dom';
 
 import baskerville from "../../../public/assets/mangaImages/baskerville.jpg";
 import dandadan from '../../../public/assets/mangaImages/dandadan.jpg';
@@ -42,7 +43,6 @@ import opm from '../../../public/assets/mangaImages/opm.jpeg'
 import dad from '../../../public/assets/mangaImages/dad.jpg'
 import out from '../../../public/assets/mangaImages/out.jpg'
 import homunculus from '../../../public/assets/mangaImages/homunculus.jpeg'
-import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [selectedUrl, setSelectedUrl] = useState(null);
@@ -78,17 +78,14 @@ export default function Home() {
       {/* Navigation Pane */}
       <NavFrame>
         <NavItemsFrame>
-          <Link to='/home'> <NavItems>Home</NavItems>  </Link>
-          
-          <Link to='/latest'> <NavItems>Latest Releases</NavItems> </Link>
-
-          <Link to='/genre'> <NavItems>Genres</NavItems> </Link>
+          <NavItems as={NavLink} to="/home" activeclassname="active">Home</NavItems>
+          <NavItems as={NavLink} to="/latest" activeclassname="active">Latest Releases</NavItems>
+          <NavItems as={NavLink} to="/genre" activeclassname="active">Genres</NavItems>
         </NavItemsFrame>
         <NavFrameRight>
-          <Link to='/store'> <NavItems>Store</NavItems> </Link>
-          <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
-
-          <NavItems>User</NavItems>
+          <NavItems as={NavLink} to="/store" activeclassname="active">Store</NavItems>
+          <NavItems as={NavLink} to="/favourites" activeclassname="active">Favourites</NavItems>
+          <NavItems as={NavLink} to="/user" activeclassname="active">User</NavItems>
         </NavFrameRight>
       </NavFrame>
 
@@ -122,9 +119,10 @@ export default function Home() {
                 ))}
               </TrendingContent>
             </TrendingFrame>
-
-            {/* Recommended Pane */}
-            <RecommendedFrame>
+          </>
+        )}
+         {/* Recommended Pane */}
+         <RecommendedFrame>
               <RecommendIndicate>Recommended</RecommendIndicate>
               <RecommendContent>
                 {recommendedItems.map((item, index) => (
@@ -135,8 +133,6 @@ export default function Home() {
                 ))}
               </RecommendContent>
             </RecommendedFrame>
-          </>
-        )}
       </ContentFrame>
     </MainContainer>
   );
