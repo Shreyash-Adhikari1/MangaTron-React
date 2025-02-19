@@ -8,18 +8,17 @@ import {
   Input,
   Button,
   RegisterText,
-  RegisterLink,
   ImageContainer,
 } from "../../styles/LoginStyles.js";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify"; // Import toast for notifications
+import { toast } from "react-toastify";
 import { loginApi } from "../../apis/api.jsx";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate(); // useNavigate hook for navigation
+  const navigate = useNavigate();
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -31,34 +30,36 @@ const LoginPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    console.log("Form submitted");
 
     const data = {
       email: email,
       password: password,
     };
 
-    // api call
+    if (!email || !password) {
+      toast.error("Email and Password are required!");
+      return;
+    }
+
+    console.log("Sending data:", data); 
+
     loginApi(data)
       .then((res) => {
+        console.log("Response:", res); 
         if (res.data.success === false) {
           toast.error(res.data.message);
         } else {
           toast.success(res.data.message);
-          // set token and user data in local storage
           localStorage.setItem("token", res.data.token);
-
-          // Converting incoming JSON
           const convertedJson = JSON.stringify(res.data.userData);
           localStorage.setItem("user", convertedJson);
-
-          // Navigate to homepage after successful login
-          navigate("/homepage");
+          navigate("/home");
         }
       })
       .catch((err) => {
-        console.log(err);
-        toast.error("Server Error!");
+        console.log("Error:", err);
+        toast.error("Server Error! Please try again later.");
       });
   };
 
@@ -68,25 +69,34 @@ const LoginPage = () => {
         <Title>MangaTron LOGIN</Title>
         <Form onSubmit={handleSubmit}>
           <Label>Email :</Label>
-          <Input type="email" value={email} onChange={handleChangeEmail} required />
+          <Input
+            type="email"
+            value={email}
+            onChange={handleChangeEmail}
+            required
+          />
 
           <Label>Password:</Label>
-          <Input type="password" value={password} onChange={handleChangePassword} required />
-
-          <Button type="submit">Start Reading</Button>
+          <Input
+            type="password"
+            value={password}
+            onChange={handleChangePassword}
+            required
+          />
+          <Button type="button" onClick={handleSubmit}>
+            Start Reading
+          </Button>
         </Form>
 
-        <Link to="/register">
-          <RegisterText>
-            Don’t Have An Account? <RegisterLink>Register Here</RegisterLink>
-          </RegisterText>
-        </Link>
+        <RegisterText>
+          Don’t Have An Account? <Link to="/register">Register Here</Link>
+        </RegisterText>
       </LoginBox>
-
       <ImageContainer>
         <img src="/assets/images/satoru.png" alt="Login Image" />
       </ImageContainer>
     </Container>
   );
 };
+
 export default LoginPage;

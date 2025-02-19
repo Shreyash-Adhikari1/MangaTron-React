@@ -18,12 +18,10 @@ const getAuthConfig = () => ({
 export const testApi = () => Api.get("/test", getAuthConfig());
 
 // Creating register API (no authentication needed)
-export const registerApi = (data) => Api.post("/api/user/register", data);
+export const registerApi = (data) => Api.post("/api/users/create", data);
 
 // Creating login API (no authentication needed)
-export const loginApi = (data) => Api.post("/api/user/login", data);
+export const loginApi = (data) => Api.post("/api/auth/login", data);
 
-// Example: Fetching user data (requires authentication)
-export const getUserData = () => Api.get("/api/user/data", getAuthConfig());
 
 export default Api;
