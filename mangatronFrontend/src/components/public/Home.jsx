@@ -25,7 +25,8 @@ import {
   UserMenuDropdown,
   UserMenuItem
 } from '../../styles/HomeStyle';
-
+import { Link } from 'react-router-dom';
+import { logout } from '../../apis/api';
 
 import baskerville from "../../../public/assets/mangaImages/baskerville.jpg";
 import dandadan from '../../../public/assets/mangaImages/dandadan.jpg';
@@ -45,7 +46,9 @@ import opm from '../../../public/assets/mangaImages/opm.jpeg'
 import dad from '../../../public/assets/mangaImages/dad.jpg'
 import out from '../../../public/assets/mangaImages/out.jpg'
 import homunculus from '../../../public/assets/mangaImages/homunculus.jpeg'
-import { Link } from 'react-router-dom';
+
+
+
 
 export default function Home() {
   const [selectedUrl, setSelectedUrl] = useState(null);
@@ -100,7 +103,7 @@ export default function Home() {
             {isUserMenuOpen && (
               <UserMenuDropdown>
                 <UserMenuItem>Profile</UserMenuItem>
-                <UserMenuItem>Logout</UserMenuItem>
+                <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
               </UserMenuDropdown>
             )}
           </UserMenuContainer>

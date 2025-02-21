@@ -59,7 +59,8 @@ export const getCurrentUser = async () => {
 //  Logout Function - Clears Token
 export const logout = () => {
     localStorage.removeItem("token");
-    console.log(" User logged out, token removed.");
+    console.log("User logged out, token removed.");
+    window.location.href = "/"; // Redirect to login page
 };
 
 //  Protected User APIs (Require Token) 
