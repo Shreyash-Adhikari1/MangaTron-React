@@ -20,7 +20,10 @@ import {
   RecommendImage,
   WebViewContainer,
   WebViewIframe,
-  BackButton
+  BackButton,
+  UserMenuContainer,
+  UserMenuDropdown,
+  UserMenuItem
 } from '../../styles/HomeStyle';
 
 
@@ -46,6 +49,7 @@ import { Link } from 'react-router-dom';
 
 export default function Home() {
   const [selectedUrl, setSelectedUrl] = useState(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
   const trendingItems = [
     { name: "One Piece", img: onePiece, url: "https://weebcentral.com/series/01J76XY7E9FNDZ1DBBM6PBJPFK/One-Piece" },
@@ -87,8 +91,19 @@ export default function Home() {
         <NavFrameRight>
           <Link to='/store'> <NavItems>Store</NavItems> </Link>
           <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
-
-          <NavItems>User</NavItems>
+          
+          <UserMenuContainer 
+            onMouseEnter={() => setIsUserMenuOpen(true)} 
+            onMouseLeave={() => setIsUserMenuOpen(false)}
+          >
+            <NavItems>User</NavItems>
+            {isUserMenuOpen && (
+              <UserMenuDropdown>
+                <UserMenuItem>Profile</UserMenuItem>
+                <UserMenuItem>Logout</UserMenuItem>
+              </UserMenuDropdown>
+            )}
+          </UserMenuContainer>
         </NavFrameRight>
       </NavFrame>
 

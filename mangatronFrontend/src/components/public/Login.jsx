@@ -1,100 +1,97 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { loginApi } from "../../apis/api.jsx";
 import {
   Container,
   LoginBox,
+  FormContainer,
   Title,
   Form,
   Label,
   Input,
   Button,
   RegisterText,
+  RegisterLink,
   ImageContainer,
 } from "../../styles/LoginStyles.js";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import { loginApi } from "../../apis/api.jsx";
+import loginImage from "../../../public/assets/images/satoru.png";
 
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
   const navigate = useNavigate();
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleChangePassword = (e) => {
-    setPassword(e.target.value);
-  };
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted");
 
-    const data = {
-      email: email,
-      password: password,
-    };
-
-    if (!email || !password) {
-      toast.error("Email and Password are required!");
+    if (!formData.email || !formData.password) {
+      toast.error("All fields are required!");
       return;
     }
 
-    console.log("Sending data:", data); 
+    try {
+      console.log("📤 Sending Login Data:", formData);
+      const res = await loginApi(formData);
 
-    loginApi(data)
-      .then((res) => {
-        console.log("Response:", res); 
-        if (res.data.success === false) {
-          toast.error(res.data.message);
-        } else {
-          toast.success(res.data.message);
-          localStorage.setItem("token", res.data.token);
-          const convertedJson = JSON.stringify(res.data.userData);
-          localStorage.setItem("user", convertedJson);
-          navigate("/home");
-        }
-      })
-      .catch((err) => {
-        console.log("Error:", err);
-        toast.error("Server Error! Please try again later.");
-      });
+      console.log("📥 Backend Response:", res.data); // Debugging log
+
+      if (res && res.access_token) {
+        // Remove `data` when checking the response
+        localStorage.setItem("token", res.access_token);
+        toast.success(res.message || "Login successful!");
+        setTimeout(() => navigate("/home"), 1000);
+      } else {
+        toast.error(res?.message || "Login failed! No token received.");
+      }
+    } catch (err) {
+      console.error("❌ Login error:", err);
+      toast.error(
+        err.response?.data?.message || "Invalid credentials or server issue."
+      );
+    }
   };
 
   return (
     <Container>
       <LoginBox>
-        <Title>MangaTron LOGIN</Title>
-        <Form onSubmit={handleSubmit}>
-          <Label>Email :</Label>
-          <Input
-            type="email"
-            value={email}
-            onChange={handleChangeEmail}
-            required
-          />
+        <FormContainer>
+          <Title>MangaTron LOGIN</Title>
+          <Form onSubmit={handleSubmit}>
+            <Label>Email :</Label>
+            <Input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
 
-          <Label>Password:</Label>
-          <Input
-            type="password"
-            value={password}
-            onChange={handleChangePassword}
-            required
-          />
-          <Button type="button" onClick={handleSubmit}>
-            Start Reading
-          </Button>
-        </Form>
+            <Label>Password :</Label>
+            <Input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
 
-        <RegisterText>
-          Don’t Have An Account? <Link to="/register">Register Here</Link>
-        </RegisterText>
+            <Button type="submit">Start Reading</Button>
+          </Form>
+
+          <RegisterText>
+            Don’t Have An Account?{" "}
+            <RegisterLink href="/register">Register Here</RegisterLink>
+          </RegisterText>
+        </FormContainer>
+
+        <ImageContainer>
+          <img src={loginImage} alt="Login Illustration" />
+        </ImageContainer>
       </LoginBox>
-      <ImageContainer>
-        <img src="/assets/images/satoru.png" alt="Login Image" />
-      </ImageContainer>
     </Container>
   );
 };

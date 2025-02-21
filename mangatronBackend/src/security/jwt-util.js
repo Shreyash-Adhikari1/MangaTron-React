@@ -1,16 +1,13 @@
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
+import jwt from 'jsonwebtoken';
+import dotenv from 'dotenv';
 
 dotenv.config();
 
 const generateToken = (payload) => {
-
-    const options = {
-      expiresIn: process.env.expiresIn, // Token expiration time
-    };
-    return jwt.sign(payload, process.env.secretkey, options);
+  const options = {
+    expiresIn: process.env.JWT_EXPIRES_IN, // Corrected variable name
   };
-  
-  export {
-    generateToken,
-  }
+  return jwt.sign(payload, process.env.JWT_SECRET, options); // Corrected variable name
+};
+
+export { generateToken };
