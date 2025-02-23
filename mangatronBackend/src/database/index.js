@@ -26,4 +26,3 @@ export const db = async () => {
     process.exit(1); // Force the app to stop if DB fails
   }
 };
-

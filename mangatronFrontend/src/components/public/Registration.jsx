@@ -10,19 +10,31 @@ import {
   Form,
   Label,
   Input,
+  CheckboxContainer,
+  CheckboxLabel,
+  Checkbox,
   Button,
   LoginRed,
 } from "../../styles/RegistrationStyle.js";
 import logo from "/assets/images/logoMangatron.png";
 
 const RegisterPage = () => {
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
-  const [loading, setLoading] = useState(false); // Loading state
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    isAdmin: false, // Default to false
+  });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   // Handle input changes
   const handleChange = (e) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value.trim() }));
+    const { name, value, type, checked } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value.trim(),
+    }));
   };
 
   // Handle form submission
@@ -35,10 +47,10 @@ const RegisterPage = () => {
       return;
     }
 
-    setLoading(true); // Start loading state
+    setLoading(true);
 
     try {
-      console.log(" Submitting Registration Data:", formData); // Debugging log
+      console.log("Submitting Registration Data:", formData);
       const res = await registerApi(formData);
 
       if (res.status === 201) {
@@ -48,10 +60,12 @@ const RegisterPage = () => {
         toast.error(res.data.message || "Registration failed!");
       }
     } catch (err) {
-      console.error(" Registration error:", err);
-      toast.error(err.response?.data?.message || "Registration failed. Please try again.");
+      console.error("Registration error:", err);
+      toast.error(
+        err.response?.data?.message || "Registration failed. Please try again."
+      );
     } finally {
-      setLoading(false); // Stop loading state
+      setLoading(false);
     }
   };
 
@@ -94,6 +108,16 @@ const RegisterPage = () => {
             required
             disabled={loading}
           />
+
+          <CheckboxContainer>
+            <Checkbox
+              type="checkbox"
+              name="isAdmin"
+              checked={formData.isAdmin}
+              onChange={handleChange}
+            />
+            <CheckboxLabel>Register as Admin</CheckboxLabel>
+          </CheckboxContainer>
 
           <Button type="submit" disabled={loading}>
             {loading ? "Signing Up..." : "Signup"}

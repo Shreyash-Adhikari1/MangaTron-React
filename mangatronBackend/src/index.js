@@ -2,38 +2,38 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { db } from "./database/index.js";
-import { userRouter, authRouter } from "./routes/index.js";
-import { createUploadsFolder } from "./security/helper.js";
+import { userRouter, authRouter, mangaRouter } from "./routes/index.js";
 
 dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 5000;
 
-// CORS Configuration
+// ✅ Corrected CORS Configuration
 app.use(
   cors({
-    origin: "http://localhost:5173",
-    credentials: true,
+    origin: ["http://localhost:5173", "http://localhost:5174"], // 🔥 Specify allowed origins
+    credentials: true, // ✅ Allow credentials (tokens/cookies)
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 // Middleware
-app.use(express.json()); // Replaces bodyParser.json()
-app.use(express.urlencoded({ extended: true })); // Handles URL-encoded data
+app.use(express.json()); // Parses incoming JSON
+app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 
 // Routes
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
+app.use("/api/manga", mangaRouter);
 
-// Ensure upload folder exists
-createUploadsFolder();
-
-// Connect to database before starting the server
-db().then(() => {
-  app.listen(port, () => {
-    console.log(`Server running on port ${port}`);
+// Database Connection & Server Start
+db()
+  .then(() => {
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+  })
+  .catch((err) => {
+    console.error("Database connection failed:", err);
+    process.exit(1); // Stop server if database connection fails
   });
-}).catch(err => {
-  console.error("Failed to connect to the database:", err);
-});

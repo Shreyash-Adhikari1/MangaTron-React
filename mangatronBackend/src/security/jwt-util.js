@@ -3,11 +3,18 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const generateToken = (payload) => {
-  const options = {
-    expiresIn: process.env.JWT_EXPIRES_IN, // Corrected variable name
+const generateToken = (user) => {
+  const payload = {
+    id: user.id,
+    email: user.email,
+    isAdmin: user.isAdmin, // ✅ Ensure admin status is included
   };
-  return jwt.sign(payload, process.env.JWT_SECRET, options); // Corrected variable name
+
+  const options = {
+    expiresIn: process.env.JWT_EXPIRES_IN || "1d", // ✅ Default expiry if missing
+  };
+
+  return jwt.sign(payload, process.env.JWT_SECRET, options);
 };
 
 export { generateToken };

@@ -7,6 +7,7 @@ const Api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
+
 // Function to get the authentication token dynamically
 const getAuthConfig = () => {
     const token = localStorage.getItem("token");

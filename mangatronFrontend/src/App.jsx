@@ -5,6 +5,7 @@ import ProtectedRoute from "./components/private/ProtectedRoute.jsx";
 
 const Login = lazy(() => import("./components/public/Login.jsx"));
 const Registration = lazy(() => import("./components/public/Registration.jsx"));
+const Admin = lazy(()=> import("./components/private/Admin.jsx"))
 const Home = lazy(() => import("./components/public/Home.jsx"));
 const Store = lazy(() => import("./components/public/Store.jsx"));
 const LatestReleases = lazy(() => import("./components/public/LatestReleases.jsx"));
@@ -19,6 +20,7 @@ function App() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Login />} />
+          <Route path="/admin" element={<Admin/>}/>
           <Route path="/register" element={<Registration />} />
 
           {/* Protected Routes - Require Login */}

@@ -83,6 +83,29 @@ export const Button = styled.button`
     background-color: #222;
   }
 `;
+export const CheckboxContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+`;
+
+// Styled checkbox
+export const Checkbox = styled.input`
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: #ff4d4d; // Change color to match your theme
+`;
+
+// Styled label for checkbox
+export const CheckboxLabel = styled.label`
+  font-size: 14px;
+  color: #333;
+  cursor: pointer;
+  user-select: none;
+`;
+
 export const LoginRed= styled.p`
   margin-top: 15px;
   font-size: 14px;
