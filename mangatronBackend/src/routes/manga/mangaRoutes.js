@@ -11,10 +11,12 @@ import upload from "../../middleware/multerConfig.js";
 
 const router = express.Router();
 
-// Routes
-router.post("/create", authGuard, authGuardAdmin, upload.single("image"), create);
+// Public routes (No authentication required)
 router.get("/", getAll);
 router.get("/:id", getById);
+
+// Protected routes (Admin only)
+router.post("/create", authGuard, authGuardAdmin, upload.single("image"), create);
 router.put("/:id", authGuard, authGuardAdmin, upload.single("image"), update);
 router.delete("/:id", authGuard, authGuardAdmin, deleteById);
 

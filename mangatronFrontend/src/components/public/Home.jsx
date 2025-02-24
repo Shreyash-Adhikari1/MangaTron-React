@@ -3,7 +3,6 @@ import {
   MainContainer,
   NavFrame,
   NavItemsFrame,
-  NavFrameRight,
   NavItems,
   ContentFrame,
   TrendingFrame,
@@ -84,17 +83,16 @@ export default function Home() {
     <MainContainer>
       {/* Navigation Pane */}
       <NavFrame>
+        <NavTitle>
+          Mangatron
+        </NavTitle>
         <NavItemsFrame>
           <Link to='/home'> <NavItems>Home</NavItems>  </Link>
           
           <Link to='/latest'> <NavItems>Latest Releases</NavItems> </Link>
 
-          <Link to='/genre'> <NavItems>Genres</NavItems> </Link>
-        </NavItemsFrame>
-        <NavFrameRight>
           <Link to='/store'> <NavItems>Store</NavItems> </Link>
-          <Link to='/favourites'> <NavItems>Favourites</NavItems> </Link>
-          
+
           <UserMenuContainer 
             onMouseEnter={() => setIsUserMenuOpen(true)} 
             onMouseLeave={() => setIsUserMenuOpen(false)}
@@ -107,7 +105,8 @@ export default function Home() {
               </UserMenuDropdown>
             )}
           </UserMenuContainer>
-        </NavFrameRight>
+        </NavItemsFrame>
+
       </NavFrame>
 
       <ContentFrame>

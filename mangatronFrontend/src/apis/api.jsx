@@ -110,4 +110,25 @@ export const deleteUser = async (id) => {
     }
 };
 
+export const addManga = async (formData) => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        throw new Error("No authentication token found.");
+      }
+  
+      const response = await Api.post("/manga/create", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data", // Ensures proper handling of file uploads
+        },
+      });
+  
+      return response.data; // Successfully added manga
+    } catch (error) {
+      console.error("Add Manga API Error:", error.response?.data || error.message);
+      throw error.response?.data || error;
+    }
+  };
+  
 export default Api;
