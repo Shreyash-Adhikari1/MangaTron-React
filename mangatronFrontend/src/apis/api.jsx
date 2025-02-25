@@ -17,7 +17,7 @@ const getAuthConfig = () => {
 export const loginApi = async (data) => {
     try {
         const response = await Api.post("/auth/login", data);
-        const token = response?.data?.access_token; 
+        const token = response?.data?.access_token;
 
         if (token) {
             localStorage.setItem("token", token);
@@ -73,39 +73,6 @@ export const getAllUsers = async () => {
     }
 };
 
-// 🔹 Get User by ID
-export const getUserById = async (id) => {
-    try {
-        const response = await Api.get(`/users/${id}`, getAuthConfig());
-        return response.data;
-    } catch (error) {
-        console.error("Get User By ID API Error:", error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-};
-
-// 🔹 Update User
-export const updateUser = async (id, data) => {
-    try {
-        const response = await Api.put(`/users/${id}`, data, getAuthConfig());
-        return response.data;
-    } catch (error) {
-        console.error("Update User API Error:", error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-};
-
-// 🔹 Delete User
-export const deleteUser = async (id) => {
-    try {
-        const response = await Api.delete(`/users/${id}`, getAuthConfig());
-        return response.data;
-    } catch (error) {
-        console.error("Delete User API Error:", error.response?.data || error.message);
-        throw error.response?.data || error;
-    }
-};
-
 // 🔹 Add Manga
 export const addManga = async (formData) => {
     const token = localStorage.getItem("token");
@@ -144,6 +111,60 @@ export const getMangaByCategory = async (category) => {
     } catch (error) {
         console.error(`Error fetching ${category} manga:`, error.response?.data || error.message);
         return [];
+    }
+}
+
+// 🔹 Add Product
+export const addProduct = async (formData) => {
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:4000/api/products/create", {
+        method: "POST",
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        body: formData, // Ensure formData includes an image file
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP Error: ${response.status}`);
+    }
+
+    return response.json();
+};
+
+// 🔹 Get All Products
+export const getProducts = async () => {
+    try {
+        const response = await Api.get("/products");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching products:", error.response?.data || error.message);
+        return [];
+    }
+};
+
+// 🔹 ✅ Get Products by Category (Fix for Store.jsx)
+export const getProductsByCategory = async (category) => {
+    try {
+        const response = await Api.get(`/products/category/${category}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching products for category ${category}:`, error.response?.data || error.message);
+        return [];
+    }
+};
+
+// 🔹 Delete Product
+export const deleteProduct = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+        await Api.delete(`/products/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return true;
+    } catch (error) {
+        console.error("Error deleting product:", error.response?.data || error.message);
+        return false;
     }
 };
 

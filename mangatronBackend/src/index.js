@@ -2,7 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import { db } from "./database/index.js";
-import { userRouter, authRouter, mangaRouter } from "./routes/index.js";
+import { userRouter, authRouter, mangaRouter,productRouter } from "./routes/index.js";
 
 dotenv.config();
 
@@ -27,6 +27,7 @@ app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/manga", mangaRouter);
+app.use("/api/products", productRouter);
 
 // Database Connection & Server Start
 db()

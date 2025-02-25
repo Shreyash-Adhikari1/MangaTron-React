@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import { sequelize } from "../../database/index.js";
 
-export const Manga = sequelize.define(
-  "Manga",
+export const Product = sequelize.define(
+  "Product",
   {
     id: {
       type: DataTypes.INTEGER,
@@ -13,11 +13,6 @@ export const Manga = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    url: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      validate: { isUrl: true },
-    },
     image: {
       type: DataTypes.STRING, // Stores Cloudinary image URL
       allowNull: false,
@@ -26,33 +21,28 @@ export const Manga = sequelize.define(
       type: DataTypes.STRING, // Stores Cloudinary public ID for easy deletion
       allowNull: false,
     },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    status: {
-      type: DataTypes.ENUM("ongoing", "completed", "hiatus"),
-      allowNull: false,
-      defaultValue: "ongoing",
-    },
     category: {
-      type: DataTypes.ENUM("trending", "recommended", "latest"), // Specify categories
+      type: DataTypes.ENUM("Manga", "Merchandise", "Figurines", "Posters"),
       allowNull: false,
     },
-    genres: {
-      type: DataTypes.ARRAY(DataTypes.STRING), // Stores multiple genres
+    price: {
+      type: DataTypes.DECIMAL(10, 2), // Allows for prices like 999.99
       allowNull: false,
-      defaultValue: [],
+    },
+    stock: {
+      type: DataTypes.INTEGER, // Represents the available stock quantity
+      allowNull: false,
+      defaultValue: 0, // Default stock is 0 if not specified
     },
   },
   {
     timestamps: true,
-    tableName: "mangas",
+    tableName: "products",
   }
 );
 
-export default Manga;
+export default Product;

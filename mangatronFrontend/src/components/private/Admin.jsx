@@ -17,7 +17,7 @@ import {
   StatusSelect,
   SectionTitle,
 } from "../../styles/AdminStyles";
-import { logout, addManga } from "../../apis/api";
+import { logout, addManga, addProduct } from "../../apis/api";
 
 export default function Admin() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -29,29 +29,56 @@ export default function Admin() {
     status: "ongoing",
     category: "",
     genres: "",
-    image: null,
+    image: "", 
   });
 
-  // Handle input changes
+  const [productData, setProductData] = useState({
+    name: "",
+    description: "",
+    category: "",
+    price: "",
+    stock: "", 
+    image: "",
+  });
+
+  const [loading, setLoading] = useState(false); 
+
+  // Handle input changes for Manga & Product
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prevState) => ({
-      ...prevState,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
     }));
   };
 
-  // Handle image upload
-  const handleImageChange = (e) => {
-    setFormData((prevState) => ({
-      ...prevState,
-      image: e.target.files[0],
+  const handleProductChange = (e) => {
+    const { name, value } = e.target;
+    setProductData((prev) => ({
+      ...prev,
+      [name]: value,
     }));
   };
 
-  // Handle form submission
+  // Handle image upload for Manga & Product
+  const handleImageChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      image: e.target.files[0] || "", 
+    }));
+  };
+  
+  const handleProductImageChange = (e) => {
+    setProductData((prev) => ({
+      ...prev,
+      image: e.target.files[0] || "", 
+    }));
+  };
+
+  // Handle Manga form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
     const mangaData = new FormData();
     mangaData.append("name", formData.name);
@@ -61,8 +88,12 @@ export default function Admin() {
     mangaData.append("status", formData.status);
     mangaData.append("category", formData.category);
 
-    // 🔹 Ensure genres is sent as an array, even if it's a comma-separated string
-    const genresArray = formData.genres.split(",").map((genre) => genre.trim());
+    // Ensure genres input is valid
+    const genresArray = formData.genres
+      .split(",")
+      .map((genre) => genre.trim())
+      .filter((genre) => genre); // Remove empty values
+
     genresArray.forEach((genre) => mangaData.append("genres", genre));
 
     if (formData.image) {
@@ -72,8 +103,6 @@ export default function Admin() {
     try {
       await addManga(mangaData);
       alert("Manga added successfully!");
-
-      // Reset form fields after submission
       setFormData({
         name: "",
         url: "",
@@ -82,11 +111,50 @@ export default function Admin() {
         status: "ongoing",
         category: "",
         genres: "",
-        image: null,
+        image: "",
       });
     } catch (error) {
       console.error("Error adding manga:", error);
       alert("Failed to add manga.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Handle Product form submission
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const productFormData = new FormData();
+    productFormData.append("name", productData.name);
+    productFormData.append("description", productData.description);
+    productFormData.append("category", productData.category);
+    productFormData.append("price", productData.price);
+    productFormData.append("stock", productData.stock);
+
+    if (productData.image) {
+      productFormData.append("image", productData.image);
+    }
+
+    console.log("Submitting Product:", Object.fromEntries(productFormData.entries()));
+
+    try {
+      await addProduct(productFormData);
+      alert("Product added successfully!");
+      setProductData({
+        name: "",
+        description: "",
+        category: "",
+        price: "",
+        stock: "",
+        image: "",
+      });
+    } catch (error) {
+      console.error("Error adding product:", error);
+      alert("Failed to add product.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,88 +181,57 @@ export default function Admin() {
         {/* Add Manga Form */}
         {selectedOption === "addManga" && (
           <FormContainer>
-            <SectionTitle>ADD MANGA FILE</SectionTitle>
+            <SectionTitle>ADD MANGA</SectionTitle>
             <Form onSubmit={handleSubmit}>
-              <Input
-                type="text"
-                name="name"
-                value={formData.name}
-                placeholder="Manga Name"
-                onChange={handleChange}
-                required
-              />
-              <Input
-                type="text"
-                name="url"
-                value={formData.url}
-                placeholder="Manga URL"
-                onChange={handleChange}
-                required
-              />
-              <Input
-                type="text"
-                name="author"
-                value={formData.author}
-                placeholder="Author"
-                onChange={handleChange}
-                required
-              />
-              <TextArea
-                name="description"
-                value={formData.description}
-                placeholder="Description"
-                onChange={handleChange}
-                required
-              />
+              <Input type="text" name="name" value={formData.name} placeholder="Manga Name" onChange={handleChange} required />
+              <Input type="text" name="url" value={formData.url} placeholder="Manga URL" onChange={handleChange} required />
+              <Input type="text" name="author" value={formData.author} placeholder="Author" onChange={handleChange} required />
+              <TextArea name="description" value={formData.description} placeholder="Description" onChange={handleChange} required />
 
-              <FileInputLabel>
-                <input
-                  type="file"
-                  name="image"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  required
-                  hidden
-                />
-                Choose File
-              </FileInputLabel>
-
-              {/* Status Selection */}
-              <StatusSelect
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required
-              >
-                <option value="ongoing">Ongoing</option>
-                <option value="completed">Completed</option>
-                <option value="hiatus">Hiatus</option>
-              </StatusSelect>
-
-              {/* Category Selection */}
-              <StatusSelect
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required
-              >
+              <StatusSelect name="category" value={formData.category} onChange={handleChange} required>
                 <option value="">Select Category</option>
                 <option value="trending">Trending</option>
                 <option value="recommended">Recommended</option>
                 <option value="latest">Latest</option>
               </StatusSelect>
 
-              {/* Genres Selection (Comma-separated values) */}
-              <Input
-                type="text"
-                name="genres"
-                value={formData.genres}
-                placeholder="Enter Genres (comma-separated)"
-                onChange={handleChange}
-                required
-              />
+              <Input type="text" name="genres" value={formData.genres} placeholder="Genres (comma-separated)" onChange={handleChange} required />
 
-              <SubmitButton type="submit">Add Manga</SubmitButton>
+              <FileInputLabel>
+                <input type="file" name="image" accept="image/*" onChange={handleImageChange} required hidden />
+                {formData.image ? formData.image.name : "Choose File"}
+              </FileInputLabel>
+
+              <SubmitButton type="submit" disabled={loading}>{loading ? "Adding..." : "Add Manga"}</SubmitButton>
+            </Form>
+          </FormContainer>
+        )}
+
+        {/* Add Product Form */}
+        {selectedOption === "addProduct" && (
+          <FormContainer>
+            <SectionTitle>ADD PRODUCT</SectionTitle>
+            <Form onSubmit={handleProductSubmit}>
+              <Input type="text" name="name" value={productData.name} placeholder="Product Name" onChange={handleProductChange} required />
+              <TextArea name="description" value={productData.description} placeholder="Description" onChange={handleProductChange} required />
+
+              <StatusSelect name="category" value={productData.category} onChange={handleProductChange} required>
+                <option value="">Select Category</option>
+                <option value="Manga">Manga</option>
+                <option value="Merchandise">Merchandise</option>
+                <option value="Figurines">Figurines</option>
+                <option value="Posters">Posters</option>
+              </StatusSelect>
+
+              <Input type="number" name="price" value={productData.price} placeholder="Price" onChange={handleProductChange} required />
+              <Input type="number" name="stock" value={productData.stock} placeholder="Stock Quantity" onChange={handleProductChange} required />
+
+              <FileInputLabel>
+                <input type="file" name="image" accept="image/*" onChange={handleProductImageChange} required hidden />
+                {productData.image ? productData.image.name : "Choose File"}
+              </FileInputLabel>
+
+              <SubmitButton type="submit" disabled={loading}>{loading ? "Adding..." : "Add Product"}</SubmitButton>
             </Form>
           </FormContainer>
         )}

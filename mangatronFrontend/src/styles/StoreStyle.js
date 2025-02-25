@@ -20,6 +20,14 @@ export const NavFrame = styled.div`
    padding: 0 20px;
    box-sizing: border-box;
 `;
+
+export const NavTitle = styled.p`
+  font-size: 24px;
+  font-weight: 600;
+  color: #f5f5f5;
+  cursor: pointer;
+`;
+
 export const NavItemsFrame = styled.div`
    display: flex;
    gap: 50px;
@@ -48,6 +56,38 @@ export const NavItems = styled.p`
 
    &:active {
       color: #ffcc00;
+   }
+`;
+
+export const UserMenuContainer = styled.div`
+   position: relative;
+   display: inline-block;
+`;
+
+export const UserMenuDropdown = styled.div`
+   position: absolute;
+   top: 100%;
+   left: 0;
+   background-color: #333;
+   border-radius: 5px;
+   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+   display: flex;
+   flex-direction: column;
+   padding: 10px 0;
+   min-width: 120px;
+   z-index: 1000;
+`;
+
+export const UserMenuItem = styled.p`
+   font-size: 18px;
+   font-family: 'Inconsolata', monospace;
+   color: white;
+   padding: 10px 20px;
+   cursor: pointer;
+   transition: background 0.3s ease-in-out;
+
+   &:hover {
+      background-color: #ffcc00;
    }
 `;
 

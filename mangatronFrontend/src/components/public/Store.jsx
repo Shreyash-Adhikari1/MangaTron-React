@@ -1,12 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StoreContainer,
   NavFrame,
   NavItemsFrame,
-  NavFrameRight,
+  NavTitle,
   NavItems,
+  UserMenuContainer,
+  UserMenuDropdown,
+  UserMenuItem,
   StoreContent,
-  ProductGrid,
   AllProductGrid,
   MangaGrid,
   MerchandiseGrid,
@@ -20,151 +22,98 @@ import {
   SidebarTitle,
   SidebarItem,
 } from "../../styles/StoreStyle.js";
-import { NavLink } from "react-router-dom";
-import onepiece from "../../../public/assets/mangaImages/onePiece.png";
+import { Link } from "react-router-dom";
+import { logout } from "../../apis/api.jsx";
+import { getProducts,getProductsByCategory } from "../../apis/api.jsx";
 
 export default function Store() {
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [products, setProducts] = useState([]);
 
-  const allProducts = [
-    { name: "One Piece Manga Vol.1", img: onepiece, price: "$10" },
-    { name: "Naruto Hoodie", img: onepiece, price: "$30" },
-    { name: "Attack on Titan Keychain", img: onepiece, price: "$5" },
-    { name: "Jujutsu Kaisen Poster", img: onepiece, price: "$12" },
-    { name: "Demon Slayer Sword", img: onepiece, price: "$50" },
-    { name: "One Piece Manga Vol.1", img: onepiece, price: "$10" },
-    { name: "Attack on Titan Vol.5", img: onepiece, price: "$12" },
-    { name: "Naruto Hoodie", img: onepiece, price: "$30" },
-    { name: "One Piece Cap", img: onepiece, price: "$15" },
-    { name: "Jujutsu Kaisen Poster", img: onepiece, price: "$12" },
-    { name: "Demon Slayer Poster", img: onepiece, price: "$10" },
-    { name: "Luffy Action Figure", img: onepiece, price: "$35" },
-    { name: "Gojo Satoru Figure", img: onepiece, price: "$40" },
-  ];
+  // ✅ Map frontend category names to match your ENUM values in PostgreSQL
+  const categoryMap = {
+    all: "all",
+    manga: "Manga",
+    merchandise: "Merchandise",
+    figures: "Figurines",
+    posters: "Posters",
+  };
 
-  const mangaProducts = [
-    { name: "One Piece Manga Vol.1", img: onepiece, price: "$10" },
-    { name: "Attack on Titan Vol.5", img: onepiece, price: "$12" },
-  ];
+  // ✅ Fetch products based on selected category
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        if (selectedCategory === "all") {
+          const data = await getProducts();
+          setProducts(data);
+        } else {
+          const data = await getProductsByCategory(categoryMap[selectedCategory]); // ✅ Use mapped category names
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
 
-  const merchandiseProducts = [
-    { name: "Naruto Hoodie", img: onepiece, price: "$30" },
-    { name: "One Piece Cap", img: onepiece, price: "$15" },
-  ];
+    fetchProducts();
+  }, [selectedCategory]);
 
-  const postersProducts = [
-    { name: "Jujutsu Kaisen Poster", img: onepiece, price: "$12" },
-    { name: "Demon Slayer Poster", img: onepiece, price: "$10" },
-  ];
-
-  const figuresProducts = [
-    { name: "Luffy Action Figure", img: onepiece, price: "$35" },
-    { name: "Gojo Satoru Figure", img: onepiece, price: "$40" },
-  ];
-
-  // Function to return the correct product grid
+  // ✅ Filter products correctly
   const renderProducts = () => {
-    
-    switch (selectedCategory) {
-      case "all":
-        return (
-          <AllProductGrid>
-            {allProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </AllProductGrid>
-        );
-      case "manga":
-        return (
-          <MangaGrid>
-            {mangaProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </MangaGrid>
-        );
-      case "merchandise":
-        return (
-          <MerchandiseGrid>
-            {merchandiseProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </MerchandiseGrid>
-        );
-      case "posters":
-        return (
-          <PostersGrid>
-            {postersProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </PostersGrid>
-        );
-      case "figures":
-        return (
-          <FiguresGrid>
-            {figuresProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </FiguresGrid>
-        );
-      default:
-        return (
-          <ProductGrid>
-            {allProducts.map((product, index) => (
-              <ProductCard key={index}>
-                <ProductImage src={product.img} alt={product.name} />
-                <ProductName>{product.name}</ProductName>
-                <ProductPrice>{product.price}</ProductPrice>
-              </ProductCard>
-            ))}
-          </ProductGrid>
-        );
+    if (products.length === 0) {
+      return <p style={{ color: "white" }}>No products found.</p>;
     }
+
+    const GridComponent = {
+      all: AllProductGrid,
+      Manga: MangaGrid,
+      Merchandise: MerchandiseGrid,
+      Posters: PostersGrid,
+      Figures: FiguresGrid,
+    }[categoryMap[selectedCategory]] || AllProductGrid;
+
+    return (
+      <GridComponent>
+        {products.map((product, index) => (
+          <ProductCard key={index}>
+            <ProductImage src={product.image} alt={product.name} />
+            <ProductName>{product.name}</ProductName>
+            <ProductPrice>${product.price}</ProductPrice>
+          </ProductCard>
+        ))}
+      </GridComponent>
+    );
   };
 
   return (
     <StoreContainer>
       {/* Navigation Pane */}
       <NavFrame>
+        <NavTitle>Mangatron</NavTitle>
         <NavItemsFrame>
-          <NavLink to="/home">
+          <Link to="/home">
             <NavItems>Home</NavItems>
-          </NavLink>
-          <NavLink to="/latest">
+          </Link>
+          <Link to="/latest">
             <NavItems>Latest Releases</NavItems>
-          </NavLink>
-          <NavLink to="/genre">
-            <NavItems>Genres</NavItems>
-          </NavLink>
-        </NavItemsFrame>
-        <NavFrameRight>
-          <NavLink to="/store">
+          </Link>
+          <Link to="/store">
             <NavItems>Store</NavItems>
-          </NavLink>
-          <NavLink to="/favourites">
-            <NavItems>Favourites</NavItems>
-          </NavLink>
-          <NavItems>User</NavItems>
-        </NavFrameRight>
+          </Link>
+          <UserMenuContainer
+            onMouseEnter={() => setIsUserMenuOpen(true)}
+            onMouseLeave={() => setIsUserMenuOpen(false)}
+          >
+            <NavItems>User</NavItems>
+            {isUserMenuOpen && (
+              <UserMenuDropdown>
+                <UserMenuItem>Profile</UserMenuItem>
+                <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
+              </UserMenuDropdown>
+            )}
+          </UserMenuContainer>
+        </NavItemsFrame>
       </NavFrame>
 
       {/* Store Content */}
@@ -172,25 +121,15 @@ export default function Store() {
         {/* Sidebar */}
         <Sidebar>
           <SidebarTitle>Categories</SidebarTitle>
-          <SidebarItem className={selectedCategory === "all" ? "active" : ""} onClick={() => setSelectedCategory("all")}>
-             All Products
-          </SidebarItem>
-
-          <SidebarItem className={selectedCategory === "manga" ? "active" : ""} onClick={() => setSelectedCategory("manga")}>
-            Manga
-          </SidebarItem>
-
-          <SidebarItem className={selectedCategory === "merchandise" ? "active" : ""} onClick={() => setSelectedCategory("merchandise")}>
-            Merchandise
-          </SidebarItem>
-
-          <SidebarItem  className={selectedCategory === "figures" ? "active" : ""} onClick={() => setSelectedCategory("figures")}>
-            Figurines
-          </SidebarItem>
-
-          <SidebarItem className={selectedCategory === "posters" ? "active" : ""}  onClick={() => setSelectedCategory("posters")}>
-            Posters
-          </SidebarItem>
+          {["all", "manga", "merchandise", "figures", "posters"].map((category) => (
+            <SidebarItem
+              key={category}
+              className={selectedCategory === category ? "active" : ""}
+              onClick={() => setSelectedCategory(category)}
+            >
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </SidebarItem>
+          ))}
         </Sidebar>
 
         {/* Product Grid */}
