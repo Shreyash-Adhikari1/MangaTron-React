@@ -3,6 +3,7 @@ import {
   create,
   getAll,
   getById,
+  getByCategory, // New function for category filtering
   update,
   deleteById,
 } from "../../controller/manga/mangaController.js";
@@ -12,8 +13,9 @@ import upload from "../../middleware/multerConfig.js";
 const router = express.Router();
 
 // Public routes (No authentication required)
-router.get("/", getAll);
-router.get("/:id", getById);
+router.get("/", getAll); // Fetch all manga (supports optional category filtering)
+router.get("/:id", getById); // Fetch manga by ID
+router.get("/category/:category", getByCategory); // Fetch manga by category
 
 // Protected routes (Admin only)
 router.post("/create", authGuard, authGuardAdmin, upload.single("image"), create);

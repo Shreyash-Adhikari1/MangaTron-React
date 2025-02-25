@@ -6,21 +6,24 @@ import { sequelize } from "../../database/index.js";
 export const create = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
-    const { name, url, author, description, status } = req.body;
-    
+    const { name, url, author, description, status, category, genres } = req.body;
+
     // Validate required fields
-    if (!name || !url || !author || !description || !status) {
+    if (!name || !url || !author || !description || !status || !category) {
       return res.status(400).json({ error: "All fields are required" });
     }
 
+    // Ensure genres is an array
+    const genresArray = Array.isArray(genres) ? genres : genres.split(",").map(genre => genre.trim());
+
     let image = null;
     let publicId = null;
-    
+
     if (req.file) {
       try {
         const result = await cloudinary.uploader.upload(req.file.path, { folder: "manga_images" });
         image = result.secure_url;
-        publicId = result.public_id; // Store public ID for deletion later
+        publicId = result.public_id;
       } catch (uploadError) {
         console.error("Cloudinary upload error:", uploadError);
         return res.status(500).json({ error: "Failed to upload image" });
@@ -28,7 +31,7 @@ export const create = async (req, res) => {
     }
 
     const newManga = await Manga.create(
-      { name, url, image, publicId, author, description, status },
+      { name, url, image, publicId, author, description, status, category, genres: genresArray },
       { transaction }
     );
 
@@ -41,13 +44,36 @@ export const create = async (req, res) => {
   }
 };
 
-// Get all manga
+
+// Get all manga (with optional category filtering)
 export const getAll = async (req, res) => {
   try {
-    const mangas = await Manga.findAll();
+    const { category } = req.query; // Get category from query params
+
+    const condition = category ? { where: { category } } : {}; // Filter by category if provided
+
+    const mangas = await Manga.findAll(condition);
     res.status(200).json(mangas);
   } catch (error) {
     console.error("Error fetching manga:", error);
+    res.status(500).json({ error: "Failed to fetch manga" });
+  }
+};
+
+// Get manga by category
+export const getByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    const mangas = await Manga.findAll({ where: { category } });
+
+    if (mangas.length === 0) {
+      return res.status(404).json({ error: "No manga found in this category" });
+    }
+
+    res.status(200).json(mangas);
+  } catch (error) {
+    console.error("Error fetching manga by category:", error);
     res.status(500).json({ error: "Failed to fetch manga" });
   }
 };
@@ -69,23 +95,21 @@ export const getById = async (req, res) => {
 export const update = async (req, res) => {
   const transaction = await sequelize.transaction();
   try {
-    const { name, url, author, description, status } = req.body;
+    const { name, url, author, description, status, category, genres } = req.body;
 
     const manga = await Manga.findByPk(req.params.id);
     if (!manga) return res.status(404).json({ error: "Manga not found" });
 
-    let image = manga.image; // Keep old image
-    let publicId = manga.publicId; // Keep old public ID
+    let image = manga.image;
+    let publicId = manga.publicId;
 
     if (req.file) {
       try {
-        // Delete old image from Cloudinary if it exists
         if (publicId) await cloudinary.uploader.destroy(publicId);
 
-        // Upload new image
         const result = await cloudinary.uploader.upload(req.file.path, { folder: "manga_images" });
         image = result.secure_url;
-        publicId = result.public_id; // Update public ID
+        publicId = result.public_id;
       } catch (uploadError) {
         console.error("Cloudinary upload error:", uploadError);
         return res.status(500).json({ error: "Failed to upload image" });
@@ -93,7 +117,7 @@ export const update = async (req, res) => {
     }
 
     await manga.update(
-      { name, url, image, publicId, author, description, status },
+      { name, url, image, publicId, author, description, status, category, genres },
       { transaction }
     );
 

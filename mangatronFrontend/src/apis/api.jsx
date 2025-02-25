@@ -7,77 +7,73 @@ const Api = axios.create({
     headers: { "Content-Type": "application/json" },
 });
 
-
 // Function to get the authentication token dynamically
 const getAuthConfig = () => {
     const token = localStorage.getItem("token");
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 };
 
-//  Login API - Stores token in localStorage
+// 🔹 Login API - Stores token in localStorage
 export const loginApi = async (data) => {
     try {
         const response = await Api.post("/auth/login", data);
-
-        // Extract token from response
         const token = response?.data?.access_token; 
+
         if (token) {
             localStorage.setItem("token", token);
-            console.log(" Token Stored:", token);
+            console.log("Token Stored:", token);
         } else {
-            console.error(" No token received from server!");
+            console.error("No token received from server!");
         }
 
-        return response.data; // Returning only the necessary data
+        return response.data;
     } catch (error) {
-        console.error(" Login API Error:", error.response?.data || error.message);
+        console.error("Login API Error:", error.response?.data || error.message);
         throw error.response?.data || error;
     }
 };
 
-//  Register API
+// 🔹 Register API
 export const registerApi = async (data) => {
     try {
         const response = await Api.post("/users/create", data);
         return response.data;
     } catch (error) {
-        console.error(" Registration API Error:", error.response?.data || error.message);
+        console.error("Registration API Error:", error.response?.data || error.message);
         throw error.response?.data || error;
     }
 };
 
-//  Get Current Authenticated User
+// 🔹 Get Current Authenticated User
 export const getCurrentUser = async () => {
     try {
         const response = await Api.get("/auth/init", getAuthConfig());
         return response.data;
     } catch (error) {
-        console.error(" Get Current User API Error:", error.response?.data || error.message);
+        console.error("Get Current User API Error:", error.response?.data || error.message);
         throw error.response?.data || error;
     }
 };
 
-//  Logout Function - Clears Token
+// 🔹 Logout Function - Clears Token
 export const logout = () => {
     localStorage.removeItem("token");
     console.log("User logged out, token removed.");
     window.location.href = "/"; // Redirect to login page
 };
 
-//  Protected User APIs (Require Token) 
-
-//  Get All Users (Admin or Authenticated Users)
+// 🔹 Get All Users (Admin or Authenticated Users)
 export const getAllUsers = async () => {
     try {
         const response = await Api.get("/users", getAuthConfig());
         return response.data;
     } catch (error) {
-        console.error(" Get Users API Error:", error.response?.data || error.message);
+        console.error("Get Users API Error:", error.response?.data || error.message);
         throw error.response?.data || error;
     }
 };
 
-//  Get User by ID
+// 🔹 Get User by ID
 export const getUserById = async (id) => {
     try {
         const response = await Api.get(`/users/${id}`, getAuthConfig());
@@ -88,7 +84,7 @@ export const getUserById = async (id) => {
     }
 };
 
-//  Update User
+// 🔹 Update User
 export const updateUser = async (id, data) => {
     try {
         const response = await Api.put(`/users/${id}`, data, getAuthConfig());
@@ -99,7 +95,7 @@ export const updateUser = async (id, data) => {
     }
 };
 
-// ✅ Delete User
+// 🔹 Delete User
 export const deleteUser = async (id) => {
     try {
         const response = await Api.delete(`/users/${id}`, getAuthConfig());
@@ -110,25 +106,45 @@ export const deleteUser = async (id) => {
     }
 };
 
+// 🔹 Add Manga
 export const addManga = async (formData) => {
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        throw new Error("No authentication token found.");
-      }
+    const token = localStorage.getItem("token");
+    const response = await fetch("http://localhost:4000/api/manga/create", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData, // No need to modify if `genres` is properly formatted before appending
+    });
   
-      const response = await Api.post("/manga/create", formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "multipart/form-data", // Ensures proper handling of file uploads
-        },
-      });
-  
-      return response.data; // Successfully added manga
-    } catch (error) {
-      console.error("Add Manga API Error:", error.response?.data || error.message);
-      throw error.response?.data || error;
+    if (!response.ok) {
+      throw new Error(`HTTP Error: ${response.status}`);
     }
+  
+    return response.json();
   };
   
+
+// 🔹 Get All Manga
+export const getManga = async () => {
+    try {
+        const response = await Api.get("/manga");
+        return response.data;
+    } catch (error) {
+        console.error("Error fetching manga:", error.response?.data || error.message);
+        return [];
+    }
+};
+
+// 🔹 Get Manga by Category (Trending, Recommended, etc.)
+export const getMangaByCategory = async (category) => {
+    try {
+        const response = await Api.get(`/manga/category/${category}`);
+        return response.data;
+    } catch (error) {
+        console.error(`Error fetching ${category} manga:`, error.response?.data || error.message);
+        return [];
+    }
+};
+
 export default Api;

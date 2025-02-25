@@ -39,6 +39,15 @@ export const Manga = sequelize.define(
       allowNull: false,
       defaultValue: "ongoing",
     },
+    category: {
+      type: DataTypes.ENUM("trending", "recommended", "latest"), // Specify categories
+      allowNull: false,
+    },
+    genres: {
+      type: DataTypes.ARRAY(DataTypes.STRING), // Stores multiple genres
+      allowNull: false,
+      defaultValue: [],
+    },
   },
   {
     timestamps: true,

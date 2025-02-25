@@ -20,6 +20,14 @@ export const NavFrame = styled.div`
    box-sizing: border-box;
 `;
 
+
+export const NavTitle = styled.p`
+  font-size: 24px;
+  font-weight: 600;
+  color: #f5f5f5;
+  cursor: pointer;
+`;
+
 export const NavItemsFrame = styled.div`
    display: flex;
    gap: 50px;
