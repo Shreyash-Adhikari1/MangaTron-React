@@ -114,6 +114,35 @@ export const getMangaByCategory = async (category) => {
     }
 }
 
+
+export const updateManga = async (id, updatedData) => {
+    try {
+        const token = localStorage.getItem("token"); // Get the token
+        const response = await Api.put(`/manga/${id}`, updatedData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`, // ✅ Add token for authentication
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating manga:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+
+export const deleteManga = async (id) => {
+    try {
+        const response = await axios.delete(`${API_BASE_URL}/manga/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting manga:", error);
+        throw error;
+    }
+};
+
+
 // 🔹 Add Product
 export const addProduct = async (formData) => {
     const token = localStorage.getItem("token");
@@ -154,6 +183,22 @@ export const getProductsByCategory = async (category) => {
     }
 };
 
+export const updateProduct = async (id, updatedData) => {
+    try {
+        const token = localStorage.getItem("token"); // Get the token
+        const response = await Api.put(`/products/${id}`, updatedData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+                Authorization: `Bearer ${token}`, // ✅ Add token for authentication
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error("Error updating product:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
 // 🔹 Delete Product
 export const deleteProduct = async (id) => {
     const token = localStorage.getItem("token");
@@ -167,5 +212,19 @@ export const deleteProduct = async (id) => {
         return false;
     }
 };
+
+export const deleteById = async (id) => {
+    const token = localStorage.getItem("token");
+    try {
+        await Api.delete(`/manga/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        return true;
+    } catch (error) {
+        console.error("Error deleting manga:", error.response?.data || error.message);
+        return false;
+    }
+};
+
 
 export default Api;

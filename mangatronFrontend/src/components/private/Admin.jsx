@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AdminContainer,
   NavFrame,
@@ -16,8 +16,27 @@ import {
   SubmitButton,
   StatusSelect,
   SectionTitle,
+  Table,
+  TableContainer,
+  TableData,
+  TableHeader,
+  TableRow,
+  ActionButton,
+  ActionContainer
 } from "../../styles/AdminStyles";
-import { logout, addManga, addProduct } from "../../apis/api";
+import {
+  logout,
+  addManga,
+  addProduct,
+  getManga,
+  getProducts,
+  getAllUsers,
+  deleteProduct,
+  deleteById,
+  updateManga,
+  updateProduct,
+  deleteManga
+} from "../../apis/api"; // Ensure fetchManga and fetchProducts are imported
 
 export default function Admin() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -29,7 +48,7 @@ export default function Admin() {
     status: "ongoing",
     category: "",
     genres: "",
-    image: "", 
+    image: "",
   });
 
   const [productData, setProductData] = useState({
@@ -37,11 +56,65 @@ export default function Admin() {
     description: "",
     category: "",
     price: "",
-    stock: "", 
+    stock: "",
     image: "",
   });
 
-  const [loading, setLoading] = useState(false); 
+  const [loadingManga, setLoadingManga] = useState(false);
+  const [loadingProduct, setLoadingProduct] = useState(false);
+  const [mangaList, setMangaList] = useState([]);
+  const [productList, setProductList] = useState([]);
+  const [editingMangaId, setEditingMangaId] = useState(null);
+  const [editingProductId, setEditingProductId] = useState(null);
+
+
+  useEffect(() => {
+    if (selectedOption === "viewManga") {
+      getManga().then(setMangaList).catch(console.error);
+    }
+    if (selectedOption === "viewProduct") {
+      getProducts().then(setProductList).catch(console.error);
+    }
+  }, [selectedOption]);
+  
+  const handleDeleteManga = async (id) => {
+    await deleteById(id);
+    setMangaList(mangaList.filter((manga) => manga.id !== id));
+  };
+
+  const handleDeleteProduct = async (id) => {
+    await deleteProduct(id);
+    setProductList(productList.filter((product) => product.id !== id));
+  };
+
+  const handleEditManga = (manga) => {
+    setEditingMangaId(manga.id); // Track the manga being edited
+    setFormData({
+      name: manga.name,
+      url: manga.url,
+      author: manga.author,
+      description: manga.description,
+      status: manga.status,
+      category: manga.category,
+      genres: manga.genres ? manga.genres.join(", ") : "", // Convert array to string
+      image: "", // Reset image to avoid pre-filled values
+    });
+    setSelectedOption("addManga"); // Show the add/edit form
+  };
+  
+
+  const handleEditProduct = (product) => {
+    setEditingProductId(product.id);
+    setProductData({
+      name: product.name,
+      description: product.description,
+      category: product.category,
+      price: product.price,
+      stock: product.stock,
+      image: "", // Reset image to avoid pre-filled values
+    });
+    setSelectedOption("addProduct");
+  };
 
   // Handle input changes for Manga & Product
   const handleChange = (e) => {
@@ -64,22 +137,22 @@ export default function Admin() {
   const handleImageChange = (e) => {
     setFormData((prev) => ({
       ...prev,
-      image: e.target.files[0] || "", 
+      image: e.target.files[0] || "",
     }));
   };
-  
+
   const handleProductImageChange = (e) => {
     setProductData((prev) => ({
       ...prev,
-      image: e.target.files[0] || "", 
+      image: e.target.files[0] || "",
     }));
   };
 
   // Handle Manga form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+    setLoadingManga(true);
+  
     const mangaData = new FormData();
     mangaData.append("name", formData.name);
     mangaData.append("url", formData.url);
@@ -87,22 +160,28 @@ export default function Admin() {
     mangaData.append("description", formData.description);
     mangaData.append("status", formData.status);
     mangaData.append("category", formData.category);
-
-    // Ensure genres input is valid
+  
     const genresArray = formData.genres
       .split(",")
       .map((genre) => genre.trim())
-      .filter((genre) => genre); // Remove empty values
-
+      .filter((genre) => genre);
+  
     genresArray.forEach((genre) => mangaData.append("genres", genre));
-
+  
     if (formData.image) {
       mangaData.append("image", formData.image);
     }
-
+  
     try {
-      await addManga(mangaData);
-      alert("Manga added successfully!");
+      if (editingMangaId) {
+        // Update manga if editing
+        await updateManga(editingMangaId, mangaData);
+        alert("Manga updated successfully!");
+      } else {
+        await addManga(mangaData);
+        alert("Manga added successfully!");
+      }
+  
       setFormData({
         name: "",
         url: "",
@@ -113,35 +192,43 @@ export default function Admin() {
         genres: "",
         image: "",
       });
+  
+      setEditingMangaId(null); // Reset edit mode
     } catch (error) {
-      console.error("Error adding manga:", error);
-      alert("Failed to add manga.");
+      console.error("Error submitting manga:", error);
+      alert("Failed to submit manga.");
     } finally {
-      setLoading(false);
+      setLoadingManga(false);
     }
   };
+  
 
   // Handle Product form submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-
+    setLoadingProduct(true);
+  
     const productFormData = new FormData();
     productFormData.append("name", productData.name);
     productFormData.append("description", productData.description);
     productFormData.append("category", productData.category);
     productFormData.append("price", productData.price);
     productFormData.append("stock", productData.stock);
-
+  
     if (productData.image) {
       productFormData.append("image", productData.image);
     }
-
-    console.log("Submitting Product:", Object.fromEntries(productFormData.entries()));
-
+  
     try {
-      await addProduct(productFormData);
-      alert("Product added successfully!");
+      if (editingProductId) {
+        // Update existing product
+        await updateProduct(editingProductId, productFormData);
+        alert("Product updated successfully!");
+      } else {
+        await addProduct(productFormData);
+        alert("Product added successfully!");
+      }
+  
       setProductData({
         name: "",
         description: "",
@@ -150,14 +237,16 @@ export default function Admin() {
         stock: "",
         image: "",
       });
+  
+      setEditingProductId(null); // Reset edit mode
     } catch (error) {
-      console.error("Error adding product:", error);
-      alert("Failed to add product.");
+      console.error("Error submitting product:", error);
+      alert("Failed to submit product.");
     } finally {
-      setLoading(false);
+      setLoadingProduct(false);
     }
   };
-
+  
   return (
     <AdminContainer>
       {/* Sidebar */}
@@ -176,6 +265,15 @@ export default function Admin() {
           <DashboardItem onClick={() => setSelectedOption("addProduct")}>
             Add Product
           </DashboardItem>
+          <DashboardItem onClick={() => setSelectedOption("viewManga")}>
+            View Manga
+          </DashboardItem>
+          <DashboardItem onClick={() => setSelectedOption("viewProduct")}>
+            View Product
+          </DashboardItem>
+          <DashboardItem onClick={() => setSelectedOption("viewUser ")}>
+            View User
+          </DashboardItem>
         </Dashboard>
 
         {/* Add Manga Form */}
@@ -183,26 +281,74 @@ export default function Admin() {
           <FormContainer>
             <SectionTitle>ADD MANGA</SectionTitle>
             <Form onSubmit={handleSubmit}>
-              <Input type="text" name="name" value={formData.name} placeholder="Manga Name" onChange={handleChange} required />
-              <Input type="text" name="url" value={formData.url} placeholder="Manga URL" onChange={handleChange} required />
-              <Input type="text" name="author" value={formData.author} placeholder="Author" onChange={handleChange} required />
-              <TextArea name="description" value={formData.description} placeholder="Description" onChange={handleChange} required />
+              <Input
+                type="text"
+                name="name"
+                value={formData.name}
+                placeholder="Manga Name"
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="text"
+                name="url"
+                value={formData.url}
+                placeholder="Manga URL"
+                onChange={handleChange}
+                required
+              />
+              <Input
+                type="text"
+                name="author"
+                value={formData.author}
+                placeholder="Author"
+                onChange={handleChange}
+                required
+              />
+              <TextArea
+                name="description"
+                value={formData.description}
+                placeholder="Description"
+                onChange={handleChange}
+                required
+              />
 
-              <StatusSelect name="category" value={formData.category} onChange={handleChange} required>
+              <StatusSelect
+                name="category"
+                value={formData.category}
+                onChange={handleChange}
+                required
+              >
                 <option value="">Select Category</option>
                 <option value="trending">Trending</option>
                 <option value="recommended">Recommended</option>
                 <option value="latest">Latest</option>
               </StatusSelect>
 
-              <Input type="text" name="genres" value={formData.genres} placeholder="Genres (comma-separated)" onChange={handleChange} required />
+              <Input
+                type="text"
+                name="genres"
+                value={formData.genres}
+                placeholder="Genres (comma-separated)"
+                onChange={handleChange}
+                required
+              />
 
               <FileInputLabel>
-                <input type="file" name="image" accept="image/*" onChange={handleImageChange} required hidden />
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  required
+                  hidden
+                />
                 {formData.image ? formData.image.name : "Choose File"}
               </FileInputLabel>
 
-              <SubmitButton type="submit" disabled={loading}>{loading ? "Adding..." : "Add Manga"}</SubmitButton>
+              <SubmitButton type="submit" disabled={loadingManga}>
+                {loadingManga ? "Adding..." : "Add Manga"}
+              </SubmitButton>
             </Form>
           </FormContainer>
         )}
@@ -212,10 +358,28 @@ export default function Admin() {
           <FormContainer>
             <SectionTitle>ADD PRODUCT</SectionTitle>
             <Form onSubmit={handleProductSubmit}>
-              <Input type="text" name="name" value={productData.name} placeholder="Product Name" onChange={handleProductChange} required />
-              <TextArea name="description" value={productData.description} placeholder="Description" onChange={handleProductChange} required />
+              <Input
+                type="text"
+                name="name"
+                value={productData.name}
+                placeholder="Product Name"
+                onChange={handleProductChange}
+                required
+              />
+              <TextArea
+                name="description"
+                value={productData.description}
+                placeholder="Description"
+                onChange={handleProductChange}
+                required
+              />
 
-              <StatusSelect name="category" value={productData.category} onChange={handleProductChange} required>
+              <StatusSelect
+                name="category"
+                value={productData.category}
+                onChange={handleProductChange}
+                required
+              >
                 <option value="">Select Category</option>
                 <option value="Manga">Manga</option>
                 <option value="Merchandise">Merchandise</option>
@@ -223,16 +387,115 @@ export default function Admin() {
                 <option value="Posters">Posters</option>
               </StatusSelect>
 
-              <Input type="number" name="price" value={productData.price} placeholder="Price" onChange={handleProductChange} required />
-              <Input type="number" name="stock" value={productData.stock} placeholder="Stock Quantity" onChange={handleProductChange} required />
+              <Input
+                type="number"
+                name="price"
+                value={productData.price}
+                placeholder="Price"
+                onChange={handleProductChange}
+                required
+              />
+              <Input
+                type="number"
+                name="stock"
+                value={productData.stock}
+                placeholder="Stock Quantity"
+                onChange={handleProductChange}
+                required
+              />
 
               <FileInputLabel>
-                <input type="file" name="image" accept="image/*" onChange={handleProductImageChange} required hidden />
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  onChange={handleProductImageChange}
+                  required
+                  hidden
+                />
                 {productData.image ? productData.image.name : "Choose File"}
               </FileInputLabel>
 
-              <SubmitButton type="submit" disabled={loading}>{loading ? "Adding..." : "Add Product"}</SubmitButton>
+              <SubmitButton type="submit" disabled={loadingProduct}>
+                {loadingProduct ? "Adding..." : "Add Product"}
+              </SubmitButton>
             </Form>
+          </FormContainer>
+        )}
+
+{selectedOption === "viewManga" && (
+          <FormContainer>
+            <SectionTitle>VIEW MANGA</SectionTitle>
+            <TableContainer>
+              <Table>
+                <thead>
+                  <TableRow>
+                    <TableHeader>Name</TableHeader>
+                    <TableHeader>Author</TableHeader>
+                    <TableHeader>Category</TableHeader>
+                    <TableHeader>Status</TableHeader>
+                    <TableHeader>Actions</TableHeader>
+                  </TableRow>
+                </thead>
+                <tbody>
+                  {mangaList.map((manga) => (
+                    <TableRow key={manga.id}>
+                      <TableData>{manga.name}</TableData>
+                      <TableData>{manga.author}</TableData>
+                      <TableData>{manga.category}</TableData>
+                      <TableData>{manga.status}</TableData>
+                      <TableData>
+                        <ActionButton onClick={() => handleEditManga(manga)}>Edit</ActionButton>
+                        <ActionButton onClick={() => handleDeleteManga(manga.id)}>Delete</ActionButton>
+                      </TableData>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            </TableContainer>
+          </FormContainer>
+        )}
+
+        {selectedOption === "viewProduct" && (
+          <FormContainer>
+            <SectionTitle>VIEW PRODUCTS</SectionTitle>
+            <TableContainer>
+              <Table>
+                <thead>
+                  <TableRow>
+                    <TableHeader>Name</TableHeader>
+                    <TableHeader>Category</TableHeader>
+                    <TableHeader>Price</TableHeader>
+                    <TableHeader>Stock</TableHeader>
+                    <TableHeader>Actions</TableHeader>
+                  </TableRow>
+                </thead>
+                <tbody>
+                  {productList.map((product) => (
+                    <TableRow key={product.id}>
+                      <TableData>{product.name}</TableData>
+                      <TableData>{product.category}</TableData>
+                      <TableData>${product.price}</TableData>
+                      <TableData>{product.stock}</TableData>
+                      <TableData>
+                        <ActionButton onClick={() => handleEditProduct(product)}>Edit</ActionButton>
+                        <ActionButton onClick={() => handleDeleteProduct(product.id)}>Delete</ActionButton>
+                      </TableData>
+                    </TableRow>
+                  ))}
+                </tbody>
+              </Table>
+            </TableContainer>
+          </FormContainer>
+        )}
+        {selectedOption === "viewUsers" && (
+          <FormContainer>
+            <SectionTitle>VIEW USERS</SectionTitle>
+            {userList.length > 0 ? (
+              userList.map((user) => <div key={user.id}>{user.name}</div>)
+            ) : (
+              <p>No users found.</p>
+            )}
           </FormContainer>
         )}
       </ContentFrame>
