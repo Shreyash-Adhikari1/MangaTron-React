@@ -11,11 +11,10 @@ export const sequelize = new Sequelize(
   {
     host: process.env.DB_HOST,
     dialect: 'postgres',
-    logging: false, // Disable logging in production for cleaner output
+    logging: false,
   }
 );
 
-// Function to connect to the database
 export const db = async () => {
   try {
     await sequelize.authenticate();
@@ -23,6 +22,6 @@ export const db = async () => {
     await sequelize.sync({ alter: true });
   } catch (e) {
     console.error("Failed to connect to database:", e);
-    process.exit(1); // Force the app to stop if DB fails
+    process.exit(1); // to stop application from running if database connection fails/
   }
 };

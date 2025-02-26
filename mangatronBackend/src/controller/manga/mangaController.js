@@ -58,7 +58,7 @@ export const create = async (req, res) => {
     }
 };
 
-// Get all manga (with optional category filtering)
+// Get all manga 
 export const getAll = async (req, res) => {
     try {
         const { category } = req.query;
@@ -88,7 +88,7 @@ export const getByCategory = async (req, res) => {
     }
 };
 
-// Get a single manga by ID
+// Get manga by ID
 export const getById = async (req, res) => {
     try {
         const manga = await Manga.findByPk(req.params.id);

@@ -32,13 +32,9 @@ export const NavItemsFrame = styled.div`
    display: flex;
    gap: 50px;
    align-items: center;
+   margin-right:60px
 `;
 
-export const NavFrameRight = styled.div`
-   display: flex;
-   gap: 50px;
-   align-items: center;
-`;
 
 export const NavItems = styled.p`
    font-size: 24px;
@@ -91,7 +87,7 @@ export const UserMenuItem = styled.p`
    }
 `;
 
-// Store Layout
+
 export const StoreContent = styled.div`
   display: flex;
   flex-grow: 1;
@@ -102,7 +98,6 @@ export const StoreContent = styled.div`
   overflow: hidden; /* Prevents scrolling of the entire layout */
 `;
 
-// Sidebar (Fixed)
 export const Sidebar = styled.div`
   width: 220px;
   background-color: #2b2c30;
@@ -138,7 +133,7 @@ export const SidebarItem = styled.p`
   }
 `;
 
-// Product Grid (Scrollable)
+
 export const ProductGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -166,31 +161,29 @@ export const AllProductGrid= styled(ProductGrid)`
   gap: 20px;
 `;
 
-// Manga Grid
 export const MangaGrid = styled(ProductGrid)`
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 20px;
 `;
 
-// Merchandise Grid
+
 export const MerchandiseGrid = styled(ProductGrid)`
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: 18px;
 `;
 
-// Posters Grid
+
 export const PostersGrid = styled(ProductGrid)`
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 12px;
 `;
 
-// Figures Grid
+
 export const FiguresGrid = styled(ProductGrid)`
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 25px;
 `;
 
-// Product Cards
 export const ProductCard = styled.div`
   background-color: #2b2c30;
   border-radius: 10px;

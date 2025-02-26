@@ -32,6 +32,7 @@ export const NavItemsFrame = styled.div`
    display: flex;
    gap: 50px;
    align-items: center;
+   margin-right:60px
 `;
 
 export const NavFrameRight = styled.div`

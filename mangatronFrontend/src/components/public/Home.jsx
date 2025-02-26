@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getMangaByCategory, logout } from "../../apis/api"; // Import new API
+import { getMangaByCategory, logout } from "../../apis/api";
 import {
   MainContainer,
   NavFrame,
@@ -27,10 +27,23 @@ import {
   UserMenuItem,
 } from "../../styles/HomeStyle";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [selectedUrl, setSelectedUrl] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+    // Function to handle admin access
+    const handleAdminAccess = () => {
+      const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+      if (isAdmin) {
+        navigate("/admin");
+      } else {
+        toast.error("Only admin can access this page");
+      }
+    };
   
   // Separate states for different categories
   const [trendingManga, setTrendingManga] = useState([]);
@@ -75,7 +88,7 @@ export default function Home() {
             <NavItems>User</NavItems>
             {isUserMenuOpen && (
               <UserMenuDropdown>
-                <UserMenuItem>Profile</UserMenuItem>
+                <UserMenuItem onClick={handleAdminAccess} >Go To Admin</UserMenuItem>
                 <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
               </UserMenuDropdown>
             )}

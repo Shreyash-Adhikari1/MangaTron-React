@@ -25,11 +25,11 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Incorrect password" });
     }
 
-    // ✅ Generate JWT Token including isAdmin field
+    // Generating token on login 
     const token = generateToken({ 
       id: user.id, 
       email: user.email, 
-      isAdmin: user.isAdmin // ✅ Ensure this is included in token
+      isAdmin: user.isAdmin //admin status yeha defined
     });
 
     return res.status(200).json({
@@ -39,12 +39,12 @@ const login = async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
-        isAdmin: user.isAdmin // ✅ Include in response
+        isAdmin: user.isAdmin 
       },
       message: "Successfully logged in",
     });
   } catch (error) {
-    console.error("❌ Login Error:", error);
+    console.error("Login Error:", error);
     return res.status(500).json({ success: false, message: "Failed to login" });
   }
 };
@@ -58,7 +58,6 @@ const init = async (req, res) => {
       return res.status(401).json({ success: false, message: "Unauthorized" });
     }
 
-    // ✅ Fetch user from the database to ensure isAdmin is correct
     const user = await User.findByPk(req.user.id, {
       attributes: ["id", "username", "email", "isAdmin"]
     });
@@ -73,7 +72,7 @@ const init = async (req, res) => {
       message: "Successfully fetched current user" 
     });
   } catch (error) {
-    console.error("❌ Fetch User Error:", error);
+    console.error("Fetch User Error:", error);
     return res.status(500).json({ success: false, message: "Failed to fetch user" });
   }
 };

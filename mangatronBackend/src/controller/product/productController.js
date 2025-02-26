@@ -2,7 +2,7 @@ import { Product } from "../../model/product/productModel.js";
 import cloudinary from "../../../uploads/cloudinaryConfig.js";
 import { sequelize } from "../../database/index.js";
 
-// Upload image to Cloudinary
+
 const uploadToCloudinary = async (file) => {
     try {
         const result = await cloudinary.uploader.upload(file, { folder: "products" });
@@ -12,7 +12,6 @@ const uploadToCloudinary = async (file) => {
     }
 };
 
-// Delete image from Cloudinary
 const deleteFromCloudinary = async (publicId) => {
     try {
         if (publicId) {
@@ -33,10 +32,10 @@ export const createProduct = async (req, res) => {
             return res.status(400).json({ error: "Product image is required" });
         }
 
-        // Upload image to Cloudinary
+        // Upload to cloudinsry
         const imageUpload = await uploadToCloudinary(req.file.path);
 
-        // Create product entry
+        
         const newProduct = await Product.create({
             name,
             description,
@@ -69,7 +68,7 @@ export const getProductsByCategory = async (req, res) => {
     try {
         const { category } = req.params;
 
-        // Ensure the category matches ENUM values
+       
         const validCategories = ["Manga", "Merchandise", "Figurines", "Posters"];
         if (!validCategories.includes(category)) {
             return res.status(400).json({ error: "Invalid category" });

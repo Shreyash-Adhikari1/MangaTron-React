@@ -1,29 +1,29 @@
 import axios from "axios";
 
-// Axios instance with base URL
 const Api = axios.create({
     baseURL: "http://localhost:4000/api",
     withCredentials: true,
     headers: { "Content-Type": "application/json" },
 });
 
-// Function to get the authentication token dynamically
+//Funvtion to get token
 const getAuthConfig = () => {
     const token = localStorage.getItem("token");
     return token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 };
 
-// 🔹 Login API - Stores token in localStorage
+
 export const loginApi = async (data) => {
     try {
         const response = await Api.post("/auth/login", data);
-        const token = response?.data?.access_token;
+        const { access_token, user } = response?.data || {};
 
-        if (token) {
-            localStorage.setItem("token", token);
-            console.log("Token Stored:", token);
+        if (access_token && user) {
+            localStorage.setItem("token", access_token);
+            localStorage.setItem("isAdmin", JSON.stringify(user.isAdmin)); 
+            console.log("Stored isAdmin:", user.isAdmin);
         } else {
-            console.error("No token received from server!");
+            console.error("Login failed: No token or user data received.");
         }
 
         return response.data;
@@ -33,7 +33,8 @@ export const loginApi = async (data) => {
     }
 };
 
-// 🔹 Register API
+
+
 export const registerApi = async (data) => {
     try {
         const response = await Api.post("/users/create", data);
@@ -44,7 +45,7 @@ export const registerApi = async (data) => {
     }
 };
 
-// 🔹 Get Current Authenticated User
+
 export const getCurrentUser = async () => {
     try {
         const response = await Api.get("/auth/init", getAuthConfig());
@@ -55,14 +56,14 @@ export const getCurrentUser = async () => {
     }
 };
 
-// 🔹 Logout Function - Clears Token
+//Logout Function {This removes the token from local storage}
 export const logout = () => {
     localStorage.removeItem("token");
     console.log("User logged out, token removed.");
-    window.location.href = "/"; // Redirect to login page
+    window.location.href = "/"; 
 };
 
-// 🔹 Get All Users (Admin or Authenticated Users)
+//Get All Users
 export const getAllUsers = async () => {
     try {
         const response = await Api.get("/users", getAuthConfig());
@@ -73,7 +74,7 @@ export const getAllUsers = async () => {
     }
 };
 
-// 🔹 Add Manga
+// Add Manga
 export const addManga = async (formData) => {
     const token = localStorage.getItem("token");
     const response = await fetch("http://localhost:4000/api/manga/create", {
@@ -81,7 +82,7 @@ export const addManga = async (formData) => {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      body: formData, // No need to modify if `genres` is properly formatted before appending
+      body: formData,
     });
   
     if (!response.ok) {
@@ -92,7 +93,7 @@ export const addManga = async (formData) => {
   };
   
 
-// 🔹 Get All Manga
+//Get All Manga
 export const getManga = async () => {
     try {
         const response = await Api.get("/manga");
@@ -103,7 +104,7 @@ export const getManga = async () => {
     }
 };
 
-// 🔹 Get Manga by Category (Trending, Recommended, etc.)
+//Get Manga by Category 
 export const getMangaByCategory = async (category) => {
     try {
         const response = await Api.get(`/manga/category/${category}`);
@@ -121,7 +122,7 @@ export const updateManga = async (id, updatedData) => {
         const response = await Api.put(`/manga/${id}`, updatedData, {
             headers: {
                 "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${token}`, // ✅ Add token for authentication
+                Authorization: `Bearer ${token}`, //Add token for authentication
             }
         });
         return response.data;

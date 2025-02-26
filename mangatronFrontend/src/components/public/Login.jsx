@@ -34,27 +34,33 @@ const LoginPage = () => {
     }
 
     try {
-      console.log("📤 Sending Login Data:", formData);
+      console.log(" Sending Login Data:", formData);
       const res = await loginApi(formData);
 
-      console.log("📥 Backend Response:", res.data); // Debugging log
+      console.log(" Backend Response:", res);
 
       if (res && res.access_token) {
-        // Remove `data` when checking the response
         localStorage.setItem("token", res.access_token);
+        localStorage.setItem("isAdmin", JSON.stringify(res.user.isAdmin)); 
+
         toast.success(res.message || "Login successful!");
-        setTimeout(() => navigate("/home"), 1000);
+
+        setTimeout(() => {
+          const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+          navigate(isAdmin ? "/admin" : "/home"); 
+        }, 1000);
       } else {
         toast.error(res?.message || "Login failed! No token received.");
       }
     } catch (err) {
-      console.error("❌ Login error:", err);
+      console.error("Login error:", err);
       toast.error(
         err.response?.data?.message || "Invalid credentials or server issue."
       );
     }
-  };
+};
 
+  
   return (
     <Container>
       <LoginBox>

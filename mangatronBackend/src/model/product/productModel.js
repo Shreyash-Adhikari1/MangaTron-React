@@ -14,11 +14,11 @@ export const Product = sequelize.define(
       allowNull: false,
     },
     image: {
-      type: DataTypes.STRING, // Stores Cloudinary image URL
+      type: DataTypes.STRING, 
       allowNull: false,
     },
     publicId: {
-      type: DataTypes.STRING, // Stores Cloudinary public ID for easy deletion
+      type: DataTypes.STRING, 
       allowNull: false,
     },
     description: {
@@ -30,13 +30,13 @@ export const Product = sequelize.define(
       allowNull: false,
     },
     price: {
-      type: DataTypes.DECIMAL(10, 2), // Allows for prices like 999.99
+      type: DataTypes.DECIMAL(10, 2), 
       allowNull: false,
     },
     stock: {
-      type: DataTypes.INTEGER, // Represents the available stock quantity
+      type: DataTypes.INTEGER, 
       allowNull: false,
-      defaultValue: 0, // Default stock is 0 if not specified
+      defaultValue: 0,
     },
   },
   {

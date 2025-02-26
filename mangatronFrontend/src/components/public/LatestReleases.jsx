@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getMangaByCategory, logout } from '../../apis/api';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import { 
   MainContainer,
   NavFrame,
@@ -23,9 +25,21 @@ import {
 import { Link } from 'react-router-dom';
 
 export default function LatestReleases() {
+  const navigate = useNavigate();
   const [selectedUrl, setSelectedUrl] = useState(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const [latestManga, setLatestManga] = useState([]); // State to store latest manga
+  const [latestManga, setLatestManga] = useState([]);
+
+  // Function to handle admin access
+      const handleAdminAccess = () => {
+        const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+        if (isAdmin) {
+          navigate("/admin");
+        } else {
+          toast.error("Only admin can access this page");
+        }
+      };
+    
 
   // Fetch latest manga on component mount
   useEffect(() => {
@@ -45,34 +59,34 @@ export default function LatestReleases() {
     <MainContainer>
       {/* Navigation Pane */}
       <NavFrame>
-        <NavTitle>Mangatron</NavTitle>
-        <NavItemsFrame>
-          <Link to="/home">
-            <NavItems>Home</NavItems>
-          </Link>
-          <Link to="/latest">
-            <NavItems>Latest Releases</NavItems>
-          </Link>
-          <Link to="/store">
-            <NavItems>Store</NavItems>
-          </Link>
-          <UserMenuContainer
-            onMouseEnter={() => setIsUserMenuOpen(true)}
-            onMouseLeave={() => setIsUserMenuOpen(false)}
-          >
-            <NavItems>User</NavItems>
-            {isUserMenuOpen && (
-              <UserMenuDropdown>
-                <UserMenuItem>Profile</UserMenuItem>
-                <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
-              </UserMenuDropdown>
-            )}
-          </UserMenuContainer>
-        </NavItemsFrame>
-      </NavFrame>
+              <NavTitle>Mangatron</NavTitle>
+              <NavItemsFrame>
+                <Link to="/home">
+                  <NavItems>Home</NavItems>
+                </Link>
+                <Link to="/latest">
+                  <NavItems>Latest Releases</NavItems>
+                </Link>
+                <Link to="/store">
+                  <NavItems>Store</NavItems>
+                </Link>
+                <UserMenuContainer
+                  onMouseEnter={() => setIsUserMenuOpen(true)}
+                  onMouseLeave={() => setIsUserMenuOpen(false)}
+                >
+                  <NavItems>User</NavItems>
+                  {isUserMenuOpen && (
+                    <UserMenuDropdown>
+                      <UserMenuItem onClick={handleAdminAccess} >Go To Admin</UserMenuItem>
+                      <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
+                    </UserMenuDropdown>
+                  )}
+                </UserMenuContainer>
+              </NavItemsFrame>
+            </NavFrame>
 
       <ContentFrame>
-        {/* If an item is selected, show the WebView (iframe) */}
+        {/* If an item is selected show the WebView*/}
         {selectedUrl ? (
           <div>
             <LatestBackButton onClick={() => setSelectedUrl(null)}>

@@ -20,23 +20,22 @@ const getAll = async (req, res) => {
  */
 const create = async (req, res) => {
   try {
-    console.log("📥 Incoming Registration Request:", req.body);
+    console.log("Incoming Registration Request:", req.body);
 
     const { username, email, password, isAdmin = false } = req.body;
 
-    // Check if email exists
     if (await User.findOne({ where: { email } })) {
-      console.error("❌ Email already in use:", email);
+      console.error("Email already in use:", email);
       return res.status(400).json({ message: "Email already in use" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ username, email, password: hashedPassword, isAdmin });
 
-    console.log("✅ User Created:", user.toJSON());
+    console.log("User Created:", user.toJSON());
     res.status(201).json({ data: user, message: "User created successfully" });
   } catch (error) {
-    console.error("❌ Create User Error:", error);
+    console.error("Create User Error:", error);
     res.status(500).json({ error: "Failed to create user" });
   }
 };
@@ -71,7 +70,7 @@ const update = async (req, res) => {
     if (email) user.email = email;
     if (username) user.username = username;
     if (password) user.password = await bcrypt.hash(password, 10);
-    if (isAdmin !== undefined) user.isAdmin = isAdmin; // Allow updating admin status
+    if (isAdmin !== undefined) user.isAdmin = isAdmin; 
 
     await user.save();
     res.status(200).json({ data: user, message: "User updated successfully" });
@@ -91,7 +90,7 @@ const deleteById = async (req, res) => {
 
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
-    console.error("❌ Delete User Error:", error);
+    console.error("Delete User Error:", error);
     res.status(500).json({ error: "Failed to delete user" });
   }
 };

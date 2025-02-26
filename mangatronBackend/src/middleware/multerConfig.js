@@ -7,9 +7,9 @@ import cloudinary from "../../uploads/cloudinaryConfig.js";
 const storage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "manga_images", // Cloudinary folder name
-    allowed_formats: ["jpg", "jpeg", "png", "gif"], // Allow specific image types
-    public_id: (req, file) => `${Date.now()}-${file.originalname.split(".")[0]}`, // Unique filename
+    folder: "manga_images",
+    allowed_formats: ["jpg", "jpeg", "png", "gif"], 
+    public_id: (req, file) => `${Date.now()}-${file.originalname.split(".")[0]}`, 
   },
 });
 
@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
     : cb(new Error("Invalid file type. Only JPEG, PNG, JPG, and GIF are allowed!"), false);
 };
 
-// Initialize Multer with Cloudinary storage
+
 const upload = multer({
   storage,
   fileFilter,

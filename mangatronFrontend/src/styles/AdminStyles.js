@@ -18,6 +18,32 @@ export const NavFrame = styled.div`
   padding: 0 20px;
 `;
 
+export const NavItemsFrame = styled.div`
+   display: flex;
+   gap: 50px;
+   align-items: center;
+`;
+
+export const NavItems = styled.p`
+   font-size: 24px;
+   font-family: 'Inconsolata', monospace;
+   font-weight: 600;
+   color: #f5f5f5;
+   text-align: center;
+   cursor: pointer;
+   margin-right:50px;
+   transition: all 0.3s ease-in-out;
+
+   &:hover {
+      color: #ffcc00;
+      transform: scale(1.09);
+   }
+
+   &:active {
+      color: #ffcc00;
+   }
+`;
+
 export const NavTitle = styled.h1`
   font-size: 24px;
   font-weight: bold;

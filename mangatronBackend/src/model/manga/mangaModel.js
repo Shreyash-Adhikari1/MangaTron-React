@@ -19,11 +19,11 @@ export const Manga = sequelize.define(
       validate: { isUrl: true },
     },
     image: {
-      type: DataTypes.STRING, // Stores Cloudinary image URL
+      type: DataTypes.STRING, // cloudinary image url
       allowNull: false,
     },
     publicId: {
-      type: DataTypes.STRING, // Stores Cloudinary public ID for easy deletion
+      type: DataTypes.STRING, // Cloudinary public id
       allowNull: false,
     },
     author: {
@@ -40,11 +40,11 @@ export const Manga = sequelize.define(
       defaultValue: "ongoing",
     },
     category: {
-      type: DataTypes.ENUM("trending", "recommended", "latest"), // Specify categories
+      type: DataTypes.ENUM("trending", "recommended", "latest"),
       allowNull: false,
     },
     genres: {
-      type: DataTypes.ARRAY(DataTypes.STRING), // Stores multiple genres
+      type: DataTypes.ARRAY(DataTypes.STRING), 
       allowNull: false,
       defaultValue: [],
     },

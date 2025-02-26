@@ -9,19 +9,18 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-// ✅ Corrected CORS Configuration
 app.use(
   cors({
-    origin: ["http://localhost:5173", "http://localhost:5174"], // 🔥 Specify allowed origins
-    credentials: true, // ✅ Allow credentials (tokens/cookies)
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 // Middleware
-app.use(express.json()); // Parses incoming JSON
-app.use(express.urlencoded({ extended: true })); // Parses URL-encoded data
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 
 // Routes
 app.use("/api/auth", authRouter);
@@ -36,5 +35,5 @@ db()
   })
   .catch((err) => {
     console.error("Database connection failed:", err);
-    process.exit(1); // Stop server if database connection fails
+    process.exit(1); 
   });

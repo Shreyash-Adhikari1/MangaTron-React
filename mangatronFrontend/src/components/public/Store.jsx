@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   StoreContainer,
   NavFrame,
@@ -24,14 +26,25 @@ import {
 } from "../../styles/StoreStyle.js";
 import { Link } from "react-router-dom";
 import { logout } from "../../apis/api.jsx";
-import { getProducts,getProductsByCategory } from "../../apis/api.jsx";
+import { getProducts, getProductsByCategory } from "../../apis/api.jsx";
 
 export default function Store() {
+  const navigate = useNavigate();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
 
-  // ✅ Map frontend category names to match your ENUM values in PostgreSQL
+  // Function to handle admin access
+      const handleAdminAccess = () => {
+        const isAdmin = JSON.parse(localStorage.getItem("isAdmin"));
+        if (isAdmin) {
+          navigate("/admin");
+        } else {
+          toast.error("Only admin can access this page");
+        }
+      };
+
+
   const categoryMap = {
     all: "all",
     manga: "Manga",
@@ -40,7 +53,7 @@ export default function Store() {
     posters: "Posters",
   };
 
-  // ✅ Fetch products based on selected category
+  // Get products based on category
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -48,7 +61,9 @@ export default function Store() {
           const data = await getProducts();
           setProducts(data);
         } else {
-          const data = await getProductsByCategory(categoryMap[selectedCategory]); // ✅ Use mapped category names
+          const data = await getProductsByCategory(
+            categoryMap[selectedCategory]
+          );
           setProducts(data);
         }
       } catch (error) {
@@ -59,19 +74,20 @@ export default function Store() {
     fetchProducts();
   }, [selectedCategory]);
 
-  // ✅ Filter products correctly
+  
   const renderProducts = () => {
     if (products.length === 0) {
       return <p style={{ color: "white" }}>No products found.</p>;
     }
 
-    const GridComponent = {
-      all: AllProductGrid,
-      Manga: MangaGrid,
-      Merchandise: MerchandiseGrid,
-      Posters: PostersGrid,
-      Figures: FiguresGrid,
-    }[categoryMap[selectedCategory]] || AllProductGrid;
+    const GridComponent =
+      {
+        all: AllProductGrid,
+        Manga: MangaGrid,
+        Merchandise: MerchandiseGrid,
+        Posters: PostersGrid,
+        Figures: FiguresGrid,
+      }[categoryMap[selectedCategory]] || AllProductGrid;
 
     return (
       <GridComponent>
@@ -108,7 +124,9 @@ export default function Store() {
             <NavItems>User</NavItems>
             {isUserMenuOpen && (
               <UserMenuDropdown>
-                <UserMenuItem>Profile</UserMenuItem>
+                <UserMenuItem onClick={handleAdminAccess}>
+                  Go To Admin
+                </UserMenuItem>
                 <UserMenuItem onClick={() => logout()}>Logout</UserMenuItem>
               </UserMenuDropdown>
             )}
@@ -121,15 +139,17 @@ export default function Store() {
         {/* Sidebar */}
         <Sidebar>
           <SidebarTitle>Categories</SidebarTitle>
-          {["all", "manga", "merchandise", "figures", "posters"].map((category) => (
-            <SidebarItem
-              key={category}
-              className={selectedCategory === category ? "active" : ""}
-              onClick={() => setSelectedCategory(category)}
-            >
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </SidebarItem>
-          ))}
+          {["all", "manga", "merchandise", "figures", "posters"].map(
+            (category) => (
+              <SidebarItem
+                key={category}
+                className={selectedCategory === category ? "active" : ""}
+                onClick={() => setSelectedCategory(category)}
+              >
+                {category.charAt(0).toUpperCase() + category.slice(1)}
+              </SidebarItem>
+            )
+          )}
         </Sidebar>
 
         {/* Product Grid */}

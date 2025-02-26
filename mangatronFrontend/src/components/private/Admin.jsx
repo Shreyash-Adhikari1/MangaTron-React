@@ -8,6 +8,8 @@ import {
   DashboardTitle,
   DashboardItem,
   NavTitle,
+  NavItemsFrame,
+  NavItems,
   FormContainer,
   Form,
   Input,
@@ -22,7 +24,7 @@ import {
   TableHeader,
   TableRow,
   ActionButton,
-  ActionContainer
+  ActionContainer,
 } from "../../styles/AdminStyles";
 import {
   logout,
@@ -35,8 +37,9 @@ import {
   deleteById,
   updateManga,
   updateProduct,
-  deleteManga
-} from "../../apis/api"; // Ensure fetchManga and fetchProducts are imported
+  deleteManga,
+} from "../../apis/api";
+import { Link } from "react-router-dom";
 
 export default function Admin() {
   const [selectedOption, setSelectedOption] = useState(null);
@@ -67,7 +70,6 @@ export default function Admin() {
   const [editingMangaId, setEditingMangaId] = useState(null);
   const [editingProductId, setEditingProductId] = useState(null);
 
-
   useEffect(() => {
     if (selectedOption === "viewManga") {
       getManga().then(setMangaList).catch(console.error);
@@ -76,7 +78,7 @@ export default function Admin() {
       getProducts().then(setProductList).catch(console.error);
     }
   }, [selectedOption]);
-  
+
   const handleDeleteManga = async (id) => {
     await deleteById(id);
     setMangaList(mangaList.filter((manga) => manga.id !== id));
@@ -88,7 +90,7 @@ export default function Admin() {
   };
 
   const handleEditManga = (manga) => {
-    setEditingMangaId(manga.id); // Track the manga being edited
+    setEditingMangaId(manga.id);
     setFormData({
       name: manga.name,
       url: manga.url,
@@ -96,12 +98,11 @@ export default function Admin() {
       description: manga.description,
       status: manga.status,
       category: manga.category,
-      genres: manga.genres ? manga.genres.join(", ") : "", // Convert array to string
-      image: "", // Reset image to avoid pre-filled values
+      genres: manga.genres ? manga.genres.join(", ") : "",
+      image: "",
     });
-    setSelectedOption("addManga"); // Show the add/edit form
+    setSelectedOption("addManga");
   };
-  
 
   const handleEditProduct = (product) => {
     setEditingProductId(product.id);
@@ -111,12 +112,11 @@ export default function Admin() {
       category: product.category,
       price: product.price,
       stock: product.stock,
-      image: "", // Reset image to avoid pre-filled values
+      image: "",
     });
     setSelectedOption("addProduct");
   };
 
-  // Handle input changes for Manga & Product
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -133,7 +133,6 @@ export default function Admin() {
     }));
   };
 
-  // Handle image upload for Manga & Product
   const handleImageChange = (e) => {
     setFormData((prev) => ({
       ...prev,
@@ -152,7 +151,7 @@ export default function Admin() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoadingManga(true);
-  
+
     const mangaData = new FormData();
     mangaData.append("name", formData.name);
     mangaData.append("url", formData.url);
@@ -160,28 +159,27 @@ export default function Admin() {
     mangaData.append("description", formData.description);
     mangaData.append("status", formData.status);
     mangaData.append("category", formData.category);
-  
+
     const genresArray = formData.genres
       .split(",")
       .map((genre) => genre.trim())
       .filter((genre) => genre);
-  
+
     genresArray.forEach((genre) => mangaData.append("genres", genre));
-  
+
     if (formData.image) {
       mangaData.append("image", formData.image);
     }
-  
+
     try {
       if (editingMangaId) {
-        // Update manga if editing
         await updateManga(editingMangaId, mangaData);
         alert("Manga updated successfully!");
       } else {
         await addManga(mangaData);
         alert("Manga added successfully!");
       }
-  
+
       setFormData({
         name: "",
         url: "",
@@ -192,8 +190,8 @@ export default function Admin() {
         genres: "",
         image: "",
       });
-  
-      setEditingMangaId(null); // Reset edit mode
+
+      setEditingMangaId(null);
     } catch (error) {
       console.error("Error submitting manga:", error);
       alert("Failed to submit manga.");
@@ -201,24 +199,22 @@ export default function Admin() {
       setLoadingManga(false);
     }
   };
-  
 
-  // Handle Product form submission
   const handleProductSubmit = async (e) => {
     e.preventDefault();
     setLoadingProduct(true);
-  
+
     const productFormData = new FormData();
     productFormData.append("name", productData.name);
     productFormData.append("description", productData.description);
     productFormData.append("category", productData.category);
     productFormData.append("price", productData.price);
     productFormData.append("stock", productData.stock);
-  
+
     if (productData.image) {
       productFormData.append("image", productData.image);
     }
-  
+
     try {
       if (editingProductId) {
         // Update existing product
@@ -228,7 +224,7 @@ export default function Admin() {
         await addProduct(productFormData);
         alert("Product added successfully!");
       }
-  
+
       setProductData({
         name: "",
         description: "",
@@ -237,8 +233,8 @@ export default function Admin() {
         stock: "",
         image: "",
       });
-  
-      setEditingProductId(null); // Reset edit mode
+
+      setEditingProductId(null);
     } catch (error) {
       console.error("Error submitting product:", error);
       alert("Failed to submit product.");
@@ -246,13 +242,17 @@ export default function Admin() {
       setLoadingProduct(false);
     }
   };
-  
+
   return (
     <AdminContainer>
       {/* Sidebar */}
       <NavFrame>
         <NavTitle>MangaTron Admin Dashboard</NavTitle>
-        <UserMenuTitle onClick={() => logout()}>Logout</UserMenuTitle>
+
+        <NavItemsFrame>
+          <Link to="/home"><NavItems>Home</NavItems>{" "}</Link>
+          <NavItems onClick={() => logout()}>Logout</NavItems>
+        </NavItemsFrame>
       </NavFrame>
 
       {/* Main Content */}
@@ -423,7 +423,7 @@ export default function Admin() {
           </FormContainer>
         )}
 
-{selectedOption === "viewManga" && (
+        {selectedOption === "viewManga" && (
           <FormContainer>
             <SectionTitle>VIEW MANGA</SectionTitle>
             <TableContainer>
@@ -445,8 +445,14 @@ export default function Admin() {
                       <TableData>{manga.category}</TableData>
                       <TableData>{manga.status}</TableData>
                       <TableData>
-                        <ActionButton onClick={() => handleEditManga(manga)}>Edit</ActionButton>
-                        <ActionButton onClick={() => handleDeleteManga(manga.id)}>Delete</ActionButton>
+                        <ActionButton onClick={() => handleEditManga(manga)}>
+                          Edit
+                        </ActionButton>
+                        <ActionButton
+                          onClick={() => handleDeleteManga(manga.id)}
+                        >
+                          Delete
+                        </ActionButton>
                       </TableData>
                     </TableRow>
                   ))}
@@ -478,8 +484,16 @@ export default function Admin() {
                       <TableData>${product.price}</TableData>
                       <TableData>{product.stock}</TableData>
                       <TableData>
-                        <ActionButton onClick={() => handleEditProduct(product)}>Edit</ActionButton>
-                        <ActionButton onClick={() => handleDeleteProduct(product.id)}>Delete</ActionButton>
+                        <ActionButton
+                          onClick={() => handleEditProduct(product)}
+                        >
+                          Edit
+                        </ActionButton>
+                        <ActionButton
+                          onClick={() => handleDeleteProduct(product.id)}
+                        >
+                          Delete
+                        </ActionButton>
                       </TableData>
                     </TableRow>
                   ))}

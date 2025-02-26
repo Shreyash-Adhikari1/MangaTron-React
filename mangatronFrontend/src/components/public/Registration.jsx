@@ -10,9 +10,6 @@ import {
   Form,
   Label,
   Input,
-  CheckboxContainer,
-  CheckboxLabel,
-  Checkbox,
   Button,
   LoginRed,
 } from "../../styles/RegistrationStyle.js";
@@ -23,7 +20,7 @@ const RegisterPage = () => {
     username: "",
     email: "",
     password: "",
-    isAdmin: false, // Default to false
+    isAdmin: false, 
   });
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -40,30 +37,29 @@ const RegisterPage = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     const { username, email, password } = formData;
     if (!username || !email || !password) {
       toast.error("All fields are required!");
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       console.log("Submitting Registration Data:", formData);
       const res = await registerApi(formData);
-
-      if (res.status === 201) {
+      console.log("Registration API Response:", res); // Log response
+  
+      if (res?.status >= 200 && res?.status < 300) { // Handle all success codes (200-299)
         toast.success(res.data.message || "Registration successful!");
         setTimeout(() => navigate("/"), 1000);
       } else {
-        toast.error(res.data.message || "Registration failed!");
+        toast.error(res.data?.message || "Registration failed!");
       }
     } catch (err) {
       console.error("Registration error:", err);
-      toast.error(
-        err.response?.data?.message || "Registration failed. Please try again."
-      );
+      toast.error(err.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -108,17 +104,6 @@ const RegisterPage = () => {
             required
             disabled={loading}
           />
-
-          <CheckboxContainer>
-            <Checkbox
-              type="checkbox"
-              name="isAdmin"
-              checked={formData.isAdmin}
-              onChange={handleChange}
-            />
-            <CheckboxLabel>Register as Admin</CheckboxLabel>
-          </CheckboxContainer>
-
           <Button type="submit" disabled={loading}>
             {loading ? "Signing Up..." : "Signup"}
           </Button>
