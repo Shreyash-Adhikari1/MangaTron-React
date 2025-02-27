@@ -48,13 +48,16 @@ const RegisterPage = () => {
   
     try {
       console.log("Submitting Registration Data:", formData);
-      const res = await registerApi(formData);
-      console.log("Registration API Response:", res); // Log response
   
-      if (res?.status >= 200 && res?.status < 300) { // Handle all success codes (200-299)
-        toast.success(res.data.message || "Registration successful!");
+      const res = await registerApi(formData);
+      console.log("Raw API Response:", res); 
+  
+      // ✅ Check res.status from Axios response object, not from res.data
+      if (res.status >= 200 && res.status < 300) {
+        toast.success(res.data?.message || "Registration successful!");
         setTimeout(() => navigate("/"), 1000);
       } else {
+        console.error("Unexpected Response:", res);
         toast.error(res.data?.message || "Registration failed!");
       }
     } catch (err) {
@@ -64,6 +67,7 @@ const RegisterPage = () => {
       setLoading(false);
     }
   };
+  
 
   return (
     <Container>

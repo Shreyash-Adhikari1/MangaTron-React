@@ -38,6 +38,7 @@ export const loginApi = async (data) => {
 export const registerApi = async (data) => {
     try {
         const response = await Api.post("/users/create", data);
+        console.log("API Response:", response);
         return response.data;
     } catch (error) {
         console.error("Registration API Error:", error.response?.data || error.message);
@@ -69,8 +70,30 @@ export const getAllUsers = async () => {
         const response = await Api.get("/users", getAuthConfig());
         return response.data;
     } catch (error) {
-        console.error("Get Users API Error:", error.response?.data || error.message);
-        throw error.response?.data || error;
+        console.error("Error fetching users:", error.response?.data || error.message);
+        return [];
+    }
+};
+
+// 🔹 Delete User by ID
+export const deleteUserById = async (id) => {
+    try {
+        const response = await Api.delete(`/users/${id}`, getAuthConfig());
+        return response.data;
+    } catch (error) {
+        console.error("Error deleting user:", error.response?.data || error.message);
+        throw error;
+    }
+};
+
+// 🔹 Update User
+export const updateUserById = async (id, userData) => {
+    try {
+        const response = await Api.put(`/users/${id}`, userData, getAuthConfig());
+        return response.data;
+    } catch (error) {
+        console.error("Error updating user:", error.response?.data || error.message);
+        throw error;
     }
 };
 

@@ -27,17 +27,18 @@ import {
   ActionContainer,
 } from "../../styles/AdminStyles";
 import {
-  logout,
-  addManga,
-  addProduct,
+  getAllUsers,
   getManga,
   getProducts,
-  getAllUsers,
-  deleteProduct,
-  deleteById,
+  updateUserById,
   updateManga,
   updateProduct,
-  deleteManga,
+  deleteById,
+  deleteUserById,
+  deleteProduct,
+  addManga,
+  addProduct,
+  logout,
 } from "../../apis/api";
 import { Link } from "react-router-dom";
 
@@ -63,10 +64,12 @@ export default function Admin() {
     image: "",
   });
 
+  const token = localStorage.getItem("token");
   const [loadingManga, setLoadingManga] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(false);
   const [mangaList, setMangaList] = useState([]);
   const [productList, setProductList] = useState([]);
+  const [userList, setUserList] = useState([]);
   const [editingMangaId, setEditingMangaId] = useState(null);
   const [editingProductId, setEditingProductId] = useState(null);
 
@@ -77,7 +80,31 @@ export default function Admin() {
     if (selectedOption === "viewProduct") {
       getProducts().then(setProductList).catch(console.error);
     }
+
+    if (selectedOption === "viewUser") {
+      getAllUsers()
+        .then((response) => {
+          console.log("Users:", response); // Debugging
+          setUserList(response.data); // Extract only the 'data' array
+        })
+        .catch((error) => console.error("Error fetching users:", error));
+    }
+    
   }, [selectedOption]);
+
+  const handleDeleteUser = async (id) => {
+    await deleteUserById(id, token);
+    setUserList(userList.filter((user) => user.id !== id));
+  };
+
+  const handleUpdateUser = async (id, updatedData) => {
+    await updateUserById(id, updatedData, token);
+    setUserList(
+      userList.map((user) =>
+        user.id === id ? { ...user, ...updatedData } : user
+      )
+    );
+  };
 
   const handleDeleteManga = async (id) => {
     await deleteById(id);
@@ -250,7 +277,9 @@ export default function Admin() {
         <NavTitle>MangaTron Admin Dashboard</NavTitle>
 
         <NavItemsFrame>
-          <Link to="/home"><NavItems>Home</NavItems>{" "}</Link>
+          <Link to="/home">
+            <NavItems>Home</NavItems>{" "}
+          </Link>
           <NavItems onClick={() => logout()}>Logout</NavItems>
         </NavItemsFrame>
       </NavFrame>
@@ -266,13 +295,13 @@ export default function Admin() {
             Add Product
           </DashboardItem>
           <DashboardItem onClick={() => setSelectedOption("viewManga")}>
-            View Manga
+            View Mangas
           </DashboardItem>
           <DashboardItem onClick={() => setSelectedOption("viewProduct")}>
-            View Product
+            View Products
           </DashboardItem>
-          <DashboardItem onClick={() => setSelectedOption("viewUser ")}>
-            View User
+          <DashboardItem onClick={() => setSelectedOption("viewUser")}>
+            View Users
           </DashboardItem>
         </Dashboard>
 
@@ -423,6 +452,7 @@ export default function Admin() {
           </FormContainer>
         )}
 
+        {/*View Mangas Table*/}
         {selectedOption === "viewManga" && (
           <FormContainer>
             <SectionTitle>VIEW MANGA</SectionTitle>
@@ -462,6 +492,7 @@ export default function Admin() {
           </FormContainer>
         )}
 
+        {/*View Products Table*/}
         {selectedOption === "viewProduct" && (
           <FormContainer>
             <SectionTitle>VIEW PRODUCTS</SectionTitle>
@@ -502,14 +533,45 @@ export default function Admin() {
             </TableContainer>
           </FormContainer>
         )}
-        {selectedOption === "viewUsers" && (
+
+        {/*View Users Table*/}
+        {selectedOption === "viewUser" && (
           <FormContainer>
             <SectionTitle>VIEW USERS</SectionTitle>
-            {userList.length > 0 ? (
-              userList.map((user) => <div key={user.id}>{user.name}</div>)
-            ) : (
-              <p>No users found.</p>
-            )}
+            <TableContainer>
+              <Table>
+                <thead>
+                  <TableRow>
+                    <TableHeader>ID</TableHeader>
+                    <TableHeader>Name</TableHeader>
+                    <TableHeader>Email</TableHeader>
+                    <TableHeader>Actions</TableHeader>
+                  </TableRow>
+                </thead>
+                <tbody>
+                  {userList.length > 0 ? (
+                    userList.map((user) => (
+                      <TableRow key={user.id}>
+                        <TableData>{user.id}</TableData>
+                        <TableData>{user.username || User.name}</TableData>
+                        <TableData>{user.email}</TableData>
+                        <TableData>
+                          <ActionButton
+                            onClick={() => handleDeleteUser(user.id)}
+                          >
+                            Delete
+                          </ActionButton>
+                        </TableData>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableData colSpan="4">No users found</TableData>
+                    </TableRow>
+                  )}
+                </tbody>
+              </Table>
+            </TableContainer>
           </FormContainer>
         )}
       </ContentFrame>
