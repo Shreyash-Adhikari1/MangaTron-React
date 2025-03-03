@@ -50,10 +50,10 @@ const RegisterPage = () => {
       console.log("Submitting Registration Data:", formData);
   
       const res = await registerApi(formData);
-      console.log("Raw API Response:", res); 
+      console.log("Raw API Response:", res); // Log response for debugging
   
-      // ✅ Check res.status from Axios response object, not from res.data
-      if (res.status >= 200 && res.status < 300) {
+      // ✅ Handle both Axios and Fetch response formats
+      if (res?.status === 201 || res?.status === 200 || res?.data?.success) {
         toast.success(res.data?.message || "Registration successful!");
         setTimeout(() => navigate("/"), 1000);
       } else {
@@ -67,7 +67,6 @@ const RegisterPage = () => {
       setLoading(false);
     }
   };
-  
 
   return (
     <Container>
@@ -108,6 +107,7 @@ const RegisterPage = () => {
             required
             disabled={loading}
           />
+          
           <Button type="submit" disabled={loading}>
             {loading ? "Signing Up..." : "Signup"}
           </Button>
